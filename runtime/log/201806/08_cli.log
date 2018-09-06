@@ -1,0 +1,19 @@
+[ 2018-06-08T17:19:16+08:00 ][ error ] [1]Call to undefined method think\App::initCommon()[D:\www\apiadmin\thinkphp\console.php:19]
+[ 2018-06-08T17:29:03+08:00 ][ error ] [2048]Non-static method think\App::init() should not be called statically[D:\www\apiadmin\thinkphp\console.php:19]
+[ 2018-06-08T17:29:21+08:00 ][ error ] [8]Undefined index: name[D:\www\apiadmin\thinkphp\library\think\Console.php:103]
+[ 2018-06-08T17:29:38+08:00 ][ error ] [2048]Non-static method think\App::run() should not be called statically[D:\www\apiadmin\thinkphp\console.php:20]
+[ 2018-06-08T17:38:50+08:00 ][ error ] [2048]Non-static method think\App::run() should not be called statically[D:\www\apiadmin\thinkphp\console.php:19]
+[ 2018-06-08T17:43:35+08:00 ][ error ] [1]Access to undeclared static property: think\App::$namespace[D:\www\apiadmin\thinkphp\library\think\App.php:543]
+[ 2018-06-08T17:45:44+08:00 ][ error ] [2048]Non-static method think\App::init() should not be called statically[D:\www\apiadmin\thinkphp\console.php:19]
+[ 2018-06-08T17:47:33+08:00 ][ error ] [1]Call to undefined function think\App()[D:\www\apiadmin\thinkphp\console.php:19]
+[ 2018-06-08T17:49:06+08:00 ][ error ] [2048]Non-static method think\App::run() should not be called statically[D:\www\apiadmin\thinkphp\console.php:19]
+[ 2018-06-08T18:11:39+08:00 ][ error ] [1]Class 'think\facade\Hook' not found[D:\www\apiadmin\vendor\topthink\think-queue\src\queue\command\Work.php:69]
+[ info ] [ LOG ] INIT File
+[ 2018-06-08T18:18:16+08:00 ][ error ] [64]Cannot use think\Hook as Hook because the name is already in use[D:\www\apiadmin\vendor\topthink\think-queue\src\queue\command\Work.php:26]
+[ info ] [ LOG ] INIT File
+[ 2018-06-08T18:19:15+08:00 ][ error ] [1]Class 'think\facade\Hook' not found[D:\www\apiadmin\vendor\topthink\think-queue\src\queue\command\Work.php:70]
+[ info ] [ LOG ] INIT File
+[ 2018-06-08T18:22:38+08:00 ][ error ] [1]Class 'think\facade\Hook' not found[D:\www\apiadmin\vendor\topthink\think-queue\src\queue\command\Work.php:70]
+[ info ] [ LOG ] INIT File
+[ 2018-06-08T18:24:29+08:00 ][ error ] [1]Class 'think\Facade' not found[D:\www\apiadmin\thinkphp\library\think\facade\Hook.php:27]
+[ info ] [ LOG ] INIT File

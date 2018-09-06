@@ -1,0 +1,29 @@
+---------------------------------------------------------------
+[ 2018-07-12T10:13:43+08:00 ] 127.0.0.1 GET /
+[ info ] test.apiadmin.com:8080/ [运行时间：0.277698s][吞吐率：3.60req/s] [内存消耗：2,855.38kb] [文件加载：41]
+[ info ] [ LANG ] D:\www\apiadmin\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'manage',
+    1 => 'Index',
+    2 => 'index',
+  ),
+  'convert' => false,
+)
+[ info ] [ HEADER ] array (
+  'host' => 'test.apiadmin.com:8080',
+  'connection' => 'keep-alive',
+  'upgrade-insecure-requests' => '1',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.62 Safari/537.36',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'accept-encoding' => 'gzip, deflate',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ RUN ] app\manage\controller\Index->index[ D:\www\apiadmin\application\manage\controller\Index.php ]
+[ info ] [ VIEW ] D:\www\apiadmin\public/../application/manage\view\index\index.html [ array (
+) ]
+[ info ] [ LOG ] INIT File

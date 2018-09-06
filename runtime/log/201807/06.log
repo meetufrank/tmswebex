@@ -1,0 +1,282 @@
+---------------------------------------------------------------
+[ 2018-07-06T16:11:40+08:00 ] 127.0.0.1 GET /wiki/login.html
+[ info ] test.apiadmin.com:8080/wiki/login.html [运行时间：0.256057s][吞吐率：3.91req/s] [内存消耗：3,041.68kb] [文件加载：43]
+[ info ] [ LANG ] D:\www\apiadmin\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'wiki',
+    1 => 'index',
+    2 => 'login',
+  ),
+  'convert' => false,
+)
+[ info ] [ HEADER ] array (
+  'host' => 'test.apiadmin.com:8080',
+  'connection' => 'keep-alive',
+  'cache-control' => 'max-age=0',
+  'upgrade-insecure-requests' => '1',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.62 Safari/537.36',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'accept-encoding' => 'gzip, deflate',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ RUN ] app\wiki\controller\Index->login[ D:\www\apiadmin\application\wiki\controller\Index.php ]
+[ info ] [ VIEW ] D:\www\apiadmin\public/../application/wiki\view\index\login.html [ array (
+) ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2018-07-06T16:12:10+08:00 ] 127.0.0.1 GET /
+[ info ] test.apiadmin.com:8080/ [运行时间：0.265588s][吞吐率：3.77req/s] [内存消耗：2,835.79kb] [文件加载：41]
+[ info ] [ LANG ] D:\www\apiadmin\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'manage',
+    1 => 'Index',
+    2 => 'index',
+  ),
+  'convert' => false,
+)
+[ info ] [ HEADER ] array (
+  'host' => 'test.apiadmin.com:8080',
+  'connection' => 'keep-alive',
+  'upgrade-insecure-requests' => '1',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.62 Safari/537.36',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'accept-encoding' => 'gzip, deflate',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ RUN ] app\manage\controller\Index->index[ D:\www\apiadmin\application\manage\controller\Index.php ]
+[ info ] [ VIEW ] D:\www\apiadmin\public/../application/manage\view\index\index.html [ array (
+) ]
+[ info ] [ LOG ] INIT File
+---------------------------------------------------------------
+[ 2018-07-06T16:12:54+08:00 ] 127.0.0.1 POST /wiki/doLogin.html
+[ info ] test.apiadmin.com:8080/wiki/doLogin.html [运行时间：1.977965s][吞吐率：0.51req/s] [内存消耗：5,116.49kb] [文件加载：53]
+[ info ] [ LANG ] D:\www\apiadmin\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'wiki',
+    1 => 'index',
+    2 => 'doLogin',
+  ),
+  'convert' => false,
+)
+[ info ] [ HEADER ] array (
+  'host' => 'test.apiadmin.com:8080',
+  'connection' => 'keep-alive',
+  'content-length' => '57',
+  'cache-control' => 'max-age=0',
+  'origin' => 'http://test.apiadmin.com:8080',
+  'upgrade-insecure-requests' => '1',
+  'content-type' => 'application/x-www-form-urlencoded',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.62 Safari/537.36',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'referer' => 'http://test.apiadmin.com:8080/wiki/login.html',
+  'accept-encoding' => 'gzip, deflate',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+)
+[ info ] [ PARAM ] array (
+  'appId' => '49875035',
+  'appSecret' => 'hklXXCojLqJFsgNcetjPIKosKlixtEAQ',
+)
+[ info ] [ RUN ] app\wiki\controller\Index->doLogin[ D:\www\apiadmin\application\wiki\controller\Index.php ]
+[ info ] [ DB ] INIT mysql
+[ info ] [ SESSION ] INIT array (
+  'id' => '',
+  'var_session_id' => '',
+  'prefix' => 'think',
+  'type' => '',
+  'auto_start' => true,
+)
+[ info ] [ VIEW ] D:\www\apiadmin\thinkphp\tpl\dispatch_jump.tpl [ array (
+  0 => 'code',
+  1 => 'msg',
+  2 => 'data',
+  3 => 'url',
+  4 => 'wait',
+) ]
+[ info ] [ LOG ] INIT File
+[ sql ] [ DB ] CONNECT:[ UseTime:1.655382s ] mysql:host=127.0.0.1;dbname=apiadmin;charset=utf8
+[ sql ] [ SQL ] SHOW COLUMNS FROM `admin_app` [ RunTime:0.050323s ]
+[ sql ] [ SQL ] SELECT * FROM `admin_app` WHERE  `app_id` = '49875035'  AND `app_secret` = 'hklXXCojLqJFsgNcetjPIKosKlixtEAQ' LIMIT 1 [ RunTime:0.005467s ]
+---------------------------------------------------------------
+[ 2018-07-06T16:12:57+08:00 ] 127.0.0.1 GET /wiki/index.html
+[ info ] test.apiadmin.com:8080/wiki/index.html [运行时间：0.330937s][吞吐率：3.02req/s] [内存消耗：5,225.95kb] [文件加载：55]
+[ info ] [ LANG ] D:\www\apiadmin\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'wiki',
+    1 => 'index',
+    2 => 'index',
+  ),
+  'convert' => false,
+)
+[ info ] [ HEADER ] array (
+  'host' => 'test.apiadmin.com:8080',
+  'connection' => 'keep-alive',
+  'upgrade-insecure-requests' => '1',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.62 Safari/537.36',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'referer' => 'http://test.apiadmin.com:8080/wiki/doLogin.html',
+  'accept-encoding' => 'gzip, deflate',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'cookie' => 'PHPSESSID=raqehbk7uf856sj0km2u2pdup5',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ RUN ] app\wiki\controller\Index->index[ D:\www\apiadmin\application\wiki\controller\Index.php ]
+[ info ] [ SESSION ] INIT array (
+  'id' => '',
+  'var_session_id' => '',
+  'prefix' => 'think',
+  'type' => '',
+  'auto_start' => true,
+)
+[ info ] [ DB ] INIT mysql
+[ info ] [ VIEW ] D:\www\apiadmin\public/../application/wiki\view\index\index.html [ array (
+  0 => 'groupInfo',
+  1 => 'appInfo',
+) ]
+[ info ] [ LOG ] INIT File
+[ sql ] [ DB ] CONNECT:[ UseTime:0.013572s ] mysql:host=127.0.0.1;dbname=apiadmin;charset=utf8
+[ sql ] [ SQL ] SHOW COLUMNS FROM `admin_group` [ RunTime:0.023051s ]
+[ sql ] [ SQL ] SELECT * FROM `admin_group` [ RunTime:0.001177s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `admin_app` [ RunTime:0.012429s ]
+[ sql ] [ SQL ] SELECT * FROM `admin_app` WHERE  `app_id` = '49875035' LIMIT 1 [ RunTime:0.000566s ]
+---------------------------------------------------------------
+[ 2018-07-06T16:13:01+08:00 ] 127.0.0.1 GET /wiki/detail/5b14e68f1acf8.html
+[ info ] test.apiadmin.com:8080/wiki/detail/5b14e68f1acf8.html [运行时间：1.572240s][吞吐率：0.64req/s] [内存消耗：5,362.35kb] [文件加载：59]
+[ info ] [ LANG ] D:\www\apiadmin\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'wiki',
+    1 => 'index',
+    2 => 'detail',
+  ),
+  'convert' => false,
+)
+[ info ] [ HEADER ] array (
+  'host' => 'test.apiadmin.com:8080',
+  'connection' => 'keep-alive',
+  'upgrade-insecure-requests' => '1',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.62 Safari/537.36',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'referer' => 'http://test.apiadmin.com:8080/wiki/index.html',
+  'accept-encoding' => 'gzip, deflate',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'cookie' => 'PHPSESSID=raqehbk7uf856sj0km2u2pdup5',
+)
+[ info ] [ PARAM ] array (
+  'groupHash' => '5b14e68f1acf8',
+  'hash' => NULL,
+)
+[ info ] [ RUN ] app\wiki\controller\Index->detail[ D:\www\apiadmin\application\wiki\controller\Index.php ]
+[ info ] [ SESSION ] INIT array (
+  'id' => '',
+  'var_session_id' => '',
+  'prefix' => 'think',
+  'type' => '',
+  'auto_start' => true,
+)
+[ info ] [ DB ] INIT mysql
+[ info ] [ CACHE ] INIT Redis
+[ info ] [ LOG ] INIT File
+[ sql ] [ DB ] CONNECT:[ UseTime:0.011548s ] mysql:host=127.0.0.1;dbname=apiadmin;charset=utf8
+[ sql ] [ SQL ] SHOW COLUMNS FROM `admin_list` [ RunTime:0.023201s ]
+[ sql ] [ SQL ] SELECT * FROM `admin_list` WHERE  `hash` IN ('5b14e69e846af')  AND `groupHash` = '5b14e68f1acf8' [ RunTime:0.001059s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `admin_fields` [ RunTime:0.029069s ]
+[ sql ] [ SQL ] SELECT * FROM `admin_fields` WHERE  `hash` = '5b14e69e846af'  AND `type` = 0 [ RunTime:0.001124s ]
+[ sql ] [ SQL ] SELECT * FROM `admin_fields` WHERE  `hash` = '5b14e69e846af'  AND `type` = 1 [ RunTime:0.001245s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `admin_group` [ RunTime:0.011533s ]
+[ sql ] [ SQL ] SELECT * FROM `admin_group` WHERE  `hash` = '5b14e68f1acf8' LIMIT 1 [ RunTime:0.000761s ]
+[ error ] [0]Redis server went away[D:\www\apiadmin\thinkphp\library\think\cache\driver\Redis.php:57]
+---------------------------------------------------------------
+[ 2018-07-06T16:13:03+08:00 ] 127.0.0.1 GET /wiki/index.html
+[ info ] test.apiadmin.com:8080/wiki/index.html [运行时间：0.301721s][吞吐率：3.31req/s] [内存消耗：5,225.95kb] [文件加载：55]
+[ info ] [ LANG ] D:\www\apiadmin\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'wiki',
+    1 => 'index',
+    2 => 'index',
+  ),
+  'convert' => false,
+)
+[ info ] [ HEADER ] array (
+  'host' => 'test.apiadmin.com:8080',
+  'connection' => 'keep-alive',
+  'upgrade-insecure-requests' => '1',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.62 Safari/537.36',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'referer' => 'http://test.apiadmin.com:8080/wiki/doLogin.html',
+  'accept-encoding' => 'gzip, deflate',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'cookie' => 'PHPSESSID=raqehbk7uf856sj0km2u2pdup5',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ RUN ] app\wiki\controller\Index->index[ D:\www\apiadmin\application\wiki\controller\Index.php ]
+[ info ] [ SESSION ] INIT array (
+  'id' => '',
+  'var_session_id' => '',
+  'prefix' => 'think',
+  'type' => '',
+  'auto_start' => true,
+)
+[ info ] [ DB ] INIT mysql
+[ info ] [ VIEW ] D:\www\apiadmin\public/../application/wiki\view\index\index.html [ array (
+  0 => 'groupInfo',
+  1 => 'appInfo',
+) ]
+[ info ] [ LOG ] INIT File
+[ sql ] [ DB ] CONNECT:[ UseTime:0.011953s ] mysql:host=127.0.0.1;dbname=apiadmin;charset=utf8
+[ sql ] [ SQL ] SHOW COLUMNS FROM `admin_group` [ RunTime:0.012226s ]
+[ sql ] [ SQL ] SELECT * FROM `admin_group` [ RunTime:0.000606s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `admin_app` [ RunTime:0.011914s ]
+[ sql ] [ SQL ] SELECT * FROM `admin_app` WHERE  `app_id` = '49875035' LIMIT 1 [ RunTime:0.000737s ]
+---------------------------------------------------------------
+[ 2018-07-06T17:39:36+08:00 ] 127.0.0.1 GET /manage/index
+[ info ] test.apiadmin.com:8080/manage/index [运行时间：0.238625s][吞吐率：4.19req/s] [内存消耗：2,836.65kb] [文件加载：41]
+[ info ] [ LANG ] D:\www\apiadmin\thinkphp\lang\zh-cn.php
+[ info ] [ ROUTE ] array (
+  'type' => 'module',
+  'module' => 
+  array (
+    0 => 'manage',
+    1 => 'index',
+    2 => 'index',
+  ),
+  'convert' => false,
+)
+[ info ] [ HEADER ] array (
+  'host' => 'test.apiadmin.com:8080',
+  'connection' => 'keep-alive',
+  'upgrade-insecure-requests' => '1',
+  'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.62 Safari/537.36',
+  'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'accept-encoding' => 'gzip, deflate',
+  'accept-language' => 'zh-CN,zh;q=0.9',
+  'cookie' => 'PHPSESSID=raqehbk7uf856sj0km2u2pdup5',
+)
+[ info ] [ PARAM ] array (
+)
+[ info ] [ RUN ] app\manage\controller\Index->index[ D:\www\apiadmin\application\manage\controller\Index.php ]
+[ info ] [ VIEW ] D:\www\apiadmin\public/../application/manage\view\index\index.html [ array (
+) ]
+[ info ] [ LOG ] INIT File

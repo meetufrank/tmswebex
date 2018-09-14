@@ -74,7 +74,7 @@ class Webex extends Base {
             'webExId'=> input('post.webExId')
         ];
        $getdata= $this->curlGetData($postdata);   //调用webex接口获取到的数据
-       
+      
        
        $this->buildSuccess($getdata, '获取成功');
        
@@ -99,8 +99,9 @@ class Webex extends Base {
             'webExId'=> $webexid
         ];
        $getdata= $this->curlGetData($postdata);   //调用webex接口获取到的数据
-       
+ 
        if(!empty($getdata)){
+           session('userName',$getdata['usefirstName'].$getdata['uselastName']);
            $getdata=[];
            $this->buildSuccess($getdata, '登陆成功');
        }
@@ -122,7 +123,7 @@ class Webex extends Base {
         $postdata=[
             'Conference'=>[
                 'ConferenceId'=>'-1',
-                'Title'=>input('post.meetingName'),
+                'Title'=>input('post.meetingName')?input('post.meetingName'):session('userName').'的直播会议',
                 'StartTimeUTC'=>date('Y-m-d H:i:s', strtotime(input('post.meetingStart'))-date('Z')-3*60).'Z',
                 'EndTimeUTC'=>date('Y-m-d H:i:s', strtotime(input('post.meetingStart'))+input('post.meetduration')*60-date('Z')).'Z',
 //                'StartTimeUTC'=>date('Y-m-d H:i:s', strtotime(input('post.meetingStart'))-date('Z')).'Z',
@@ -211,6 +212,7 @@ class Webex extends Base {
             
             //加入pexip队列
             $queuertmpdata=[
+                'meetingkey'=>$data['ConferenceId'],
                 'stoptime'=>strtotime($data['EndTimeUTC']),
                 'id'=>time()
             ];
@@ -299,6 +301,7 @@ class Webex extends Base {
      * TMS获取会议信息
      */
     public function tmsGetMeetingInfo() {
+        
         $this->responseurl="https://tms.ketiancloud.com/tms/external/booking/bookingservice.asmx";
         $postdata=[
             'ConferenceId'=>input('post.meetingKey')
@@ -419,21 +422,50 @@ class Webex extends Base {
     }
 
 
-    /*
+//    /*
+//     * 删除会议
+//     * 
+//     */
+//    public function deleteMeeting(){
+//        $this->responseurl="java:com.webex.service.binding.meeting.DelMeeting";
+//        $postdata=[
+//            'meetingKey'=> input('post.meetingKey')
+//        ];
+//       $getdata= $this->curlGetData($postdata);   //调用webex接口获取到的数据
+//       
+//       
+//       $this->buildSuccess($getdata, '删除成功');
+//       
+//    }
+      /*
      * 删除会议
      * 
      */
     public function deleteMeeting(){
-        $this->responseurl="java:com.webex.service.binding.meeting.DelMeeting";
+        
+        $this->responseurl="https://tms.ketiancloud.com/tms/external/booking/bookingservice.asmx";
+        if(!input('post.meetingKey')){
+            echo $this->buildFailed(-1, '缺少必要参数。',[],false); //表示未登录,或者登陆失效
+                
+            exit;
+        }
         $postdata=[
-            'meetingKey'=> input('post.meetingKey')
+            'ConferenceId'=>input('post.meetingKey')
         ];
-       $getdata= $this->curlGetData($postdata);   //调用webex接口获取到的数据
-       
-       
-       $this->buildSuccess($getdata, '删除成功');
+        $result=$this->tmsCurl($postdata,'DeleteConferenceById');
+        $status=$this->validclient($result);
+        if(!$status){
+            $result=$this->tmsCurl($postdata,'DeleteConferenceById');
+        }
+        cache(input('post.meetingKey'),input('post.meetingKey'));
+        $quedata=[
+            'timestamp'=>time()
+        ];
+        Queue::push('app\common\jobs\PexipJob@sendlive',$quedata, $queue ='PexipJob');
+        $this->buildSuccess([], '删除成功');
        
     }
+    
     
     /*
      * 获取sessionTicket

@@ -1,18 +1,5 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:63:"D:\www\apiadmin\public/../application/api\view\index\index.html";i:1531987488;}*/ ?>
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset=utf-8>
-        <meta name=viewport content="width=device-width,initial-scale=1,minmum-scale=1,maxmum-scale=1,user-scalable=no">
-        <title>WebEx</title>
-        <link href=/static/ceshi/static/css/app.9309146e538912e95f708cd2684fc66a.css rel=stylesheet>
-    </head>
-    <body>
-        <div id=app>
-            
-        </div>
-        <script type=text/javascript src=/static/ceshi/static/js/manifest.2ae2e69a05c33dfc65f8.js></script>
-        <script type=text/javascript src=/static/ceshi/static/js/vendor.2675c0fbee138617da61.js></script>
-        <script type=text/javascript src=/static/ceshi//static/js/app.6f457bb84830aa1a95bb.js></script>
-    </body>
-</html>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:63:"D:\www\apiadmin\public/../application/api\view\index\index.html";i:1536213726;}*/ ?>
+<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"><link rel=icon href=data:image/ico;base64,aWNv><title>WebEx</title><style>.el-message-box{
+    		width: 90%!important;
+    		margin-top:20%!important;
+    	}</style><link href=/static/ceshi/static/css/app.0c004c3ff339c4d4ae96d8fc0148a97c.css?v=1.1 rel=stylesheet></head><body><div id=app></div><script type=text/javascript src=/static/ceshi/static/js/manifest.2ae2e69a05c33dfc65f8.js?v=1.1></script><script type=text/javascript src=/static/ceshi/static/js/vendor.9d091d963239223bf736.js?v=1.1></script><script type=text/javascript src=/static/ceshi/static/js/app.9f06ec5ad76a27c2bfa6.js?v=1.1></script></body></html>

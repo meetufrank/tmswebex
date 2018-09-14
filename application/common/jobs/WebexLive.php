@@ -23,6 +23,13 @@ class WebexLive
     public function sendlive(Job $job, $data) 
     {
         
+        if(cache($data['meetingkey'])){
+            cache($data['meetingkey'],null);
+            $job->delete();
+            
+        }else{
+            
+        
         //file_put_contents(RUNTIME_PATH.'redislog.txt', json_encode($data),FILE_APPEND);
         $result=$this->send($data);
         
@@ -45,7 +52,7 @@ class WebexLive
             }
             
         }
-       
+       }
     }
     /**
      * 根据消息中的数据进行实际的业务处理

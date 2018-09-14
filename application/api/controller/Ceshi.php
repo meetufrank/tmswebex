@@ -68,7 +68,7 @@ class Ceshi extends Base {
 //    }
     public function ceshi() {
         
-        Queue::push('app\common\jobs\PexipJob@sendlive', [], $queue ='PexipJob');
+//        Queue::push('app\common\jobs\PexipJob@sendlive', [], $queue ='PexipJob');
     }
     
 }

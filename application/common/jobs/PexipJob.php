@@ -22,18 +22,39 @@ class PexipJob
      */
     public function sendlive(Job $job, $data) 
     {
+//        if(cache($data['meetingkey'])){
+//            cache($data['meetingkey'],null);
+//            $job->delete();
+//        }else{
+//            
+//      
+//        if($data['stoptime']>time()){
+//            $time=$data['stoptime']-time();
+//             $job->release($time);
+//        }elseif($data['stoptime']<=time()){
+//           $result=$this->send($data);
+//           $job->delete();
+//        }  
         
-        if($data['stoptime']>time()){
-            $time=$data['stoptime']-time();
-             $job->release($time);
-        }elseif($data['stoptime']<=time()){
-           $result=$this->send($data);
-           $job->delete();
-        }  
         
         
+//       }
         
-     
+        if(!empty($data)&&isset($data['timestamp'])){
+            if($data['timestamp']){
+                if(time()-$data['timestamp']>=10){
+                    $result=$this->send($data);
+                    $job->delete();
+                }else{
+                    $time=time()+10-$data['timestamp'];
+                    $job->release($time);
+                }
+                
+            }
+        }else{
+            $this->send($data);  
+            $job->release(60*10);
+        }
        
     }
     /**
@@ -83,6 +104,11 @@ class PexipJob
                                    $d_result=httpRequest("https://106.38.228.233:65443/api/admin/command/v1/conference/disconnect/", 'post', json_encode($json_data),$arr_header);
                                     
                                 }
+//                                $json_data=[
+//                                        'conference_id'=>$objid
+//                                    ];
+//                                    
+//                                   $d_result=httpRequest("https://106.38.228.233:65443/api/admin/command/v1/conference/disconnect/", 'post', json_encode($json_data),$arr_header);
                             }
                         }
                     }

@@ -4,29 +4,27 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "1178414e2913884b4311e42f4174c838",
+    "content-hash": "c38a84a081b633a51738b670cdfef2fd",
     "packages": [
         {
             "name": "php-curl-class/php-curl-class",
-            "version": "8.1.0",
+            "version": "8.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-curl-class/php-curl-class.git",
-                "reference": "0090c30b4348028cabf1d03427423460ca7dc4a4"
+                "reference": "75597b28c454acd9767e6182371376916cdb8531"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-curl-class/php-curl-class/zipball/0090c30b4348028cabf1d03427423460ca7dc4a4",
-                "reference": "0090c30b4348028cabf1d03427423460ca7dc4a4",
+                "url": "https://files.phpcomposer.com/files/php-curl-class/php-curl-class/75597b28c454acd9767e6182371376916cdb8531.zip",
+                "reference": "75597b28c454acd9767e6182371376916cdb8531",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
-                "ext-mbstring": "*",
                 "php": ">=5.3"
             },
             "require-dev": {
-                "ext-gd": "*",
                 "phpunit/phpunit": "*",
                 "squizlabs/php_codesniffer": "*"
             },
@@ -63,129 +61,7 @@
                 "web service",
                 "xml"
             ],
-            "time": "2018-06-06T05:01:44+00:00"
-        },
-        {
-            "name": "topthink/think-helper",
-            "version": "v1.0.6",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/top-think/think-helper.git",
-                "reference": "0c99dc625b0d2d4124e1b6ca15a3ad6f0125963f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/top-think/think-helper/zipball/0c99dc625b0d2d4124e1b6ca15a3ad6f0125963f",
-                "reference": "0c99dc625b0d2d4124e1b6ca15a3ad6f0125963f",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "think\\helper\\": "src"
-                },
-                "files": [
-                    "src/helper.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "yunwuxin",
-                    "email": "448901948@qq.com"
-                }
-            ],
-            "description": "The ThinkPHP5 Helper Package",
-            "time": "2017-04-05T07:15:37+00:00"
-        },
-        {
-            "name": "topthink/think-installer",
-            "version": "v2.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/top-think/think-installer.git",
-                "reference": "f5400a12c60e513911aef41fe443fa6920952675"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/top-think/think-installer/zipball/f5400a12c60e513911aef41fe443fa6920952675",
-                "reference": "f5400a12c60e513911aef41fe443fa6920952675",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^1.0"
-            },
-            "require-dev": {
-                "composer/composer": "1.0.*@dev"
-            },
-            "type": "composer-plugin",
-            "extra": {
-                "class": "think\\composer\\Plugin"
-            },
-            "autoload": {
-                "psr-4": {
-                    "think\\composer\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "yunwuxin",
-                    "email": "448901948@qq.com"
-                }
-            ],
-            "time": "2018-05-11T06:45:42+00:00"
-        },
-        {
-            "name": "topthink/think-queue",
-            "version": "v1.1.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/top-think/think-queue.git",
-                "reference": "465320c9cb7811df22d4ff8f29f58ead7d104348"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/top-think/think-queue/zipball/465320c9cb7811df22d4ff8f29f58ead7d104348",
-                "reference": "465320c9cb7811df22d4ff8f29f58ead7d104348",
-                "shasum": ""
-            },
-            "require": {
-                "topthink/think-helper": ">=1.0.4",
-                "topthink/think-installer": ">=1.0.10"
-            },
-            "type": "think-extend",
-            "extra": {
-                "think-config": {
-                    "queue": "src/config.php"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "think\\": "src"
-                },
-                "files": [
-                    "src/common.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "yunwuxin",
-                    "email": "448901948@qq.com"
-                }
-            ],
-            "description": "The ThinkPHP5 Queue Package",
-            "time": "2018-05-04T05:29:53+00:00"
+            "time": "2018-04-09T08:28:13+00:00"
         }
     ],
     "packages-dev": [],

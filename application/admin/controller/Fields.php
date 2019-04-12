@@ -211,7 +211,7 @@ class Fields extends Base {
             );
             $dataArr[] = $addArr;
             $prefix .= '[]';
-            
+            print_r($data);exit;
             if (is_array($data[0])) {
                 $this->handle($data[0], $dataArr, $prefix);
             }

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WebEx</title>
+    <link rel="icon" type="image/x-icon" href="img/logo.png" />
+    <link rel="stylesheet" href="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/begin.css">
+    <link rel="stylesheet" href="css/rolldate.css">
+    <style>
+
+    </style>
+</head>
+<body>
+    <div class="begin">
+        <div class="content">
+            <!--开始时间-->
+            <div class="start">
+                <span>开始时间</span>
+                <span>2018-12-3 16:30</span>
+            </div>
+            <!--持续时间输入框-->
+            <div class="shuru">
+                <form name="myform">
+                    <input type="text" id="demo4" placeholder="持续时间" readonly name="time" data-foolish-msg="请输入持续时间">
+                    <i class="glyphicon glyphicon-time"></i>
+                </form>
+
+            </div>
+            <!--中间内容-->
+            <!--提交按钮-->
+            <button class="tijiao" type="submit">提交</button>
+        </div>
+    </div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/rolldate.js"></script>
+    <script src="layer.mobile-v2.0/layer.mobile-v2.0/layer_mobile/layer.js"></script>
+    <script>
+        $('.tijiao').click(function(){
+           if(myform.time.value == ""){
+               layer.open({
+                   content: '请选择持续时间'
+                   ,skin: 'msg'
+                   ,time: 2 //2秒后自动关闭
+                   // 弹出层高度 下边距
+                   ,style:'margin-bottom:200px'
+               });
+           }
+        });
+    </script>
+    <script>
+        new rolldate.Date({
+            el:'#demo4',
+            format:'hh:mm',
+            theme:'blue',
+            minStep:15
+        });
+    </script>
+</body>
+</html>

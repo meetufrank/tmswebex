@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>会议详情</title>
+    <link rel="icon" type="image/x-icon" href="__WEBEX__/img/logo.png" />
+    <link rel="stylesheet" href="__WEBEX__/bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__WEBEX__/css/details.css">
+    <style>
+        .details{
+            z-index: 9999;
+            background: #fff;
+        }
+        textarea{
+            overflow-y: hidden;
+            overflow-x: hidden;
+            outline: none;
+            resize:none;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="details">
+        <div class="content">
+            <!--title-->
+            <div class="title">
+                <input type="text" readonly="readonly" value="{$info.meetingname}">
+            </div>
+            <!--开始时间-->
+            <div class="time">
+                <span>开始时间:</span>
+                <input id="time" class="time" type="text" readonly="readonly" value="{$info.starttime}">
+            </div>
+            <!--会议号-->
+            <div class="huiyi">
+                <span>会议号:</span>
+                <input id="huiyi" type="text" readonly="readonly" value="{$info.meetingkey}">
+            </div>
+            <!--会议密码-->
+            <div class="pwd">
+                <span>会议密码:</span>
+                <input id="pwd" type="text" readonly="readonly" value="{$info.meetingpassword}">
+            </div>
+            <!--主持人密钥-->
+            <div class="host">
+                <span>主持人密钥:</span>
+                <input id="key" type="text" readonly="readonly" value="{$info.hostpassword}">
+            </div>
+            <!--主持人连接-->
+            <div class="link">
+                <span>主持人链接:</span>
+                <input id="host" type="text" readonly="readonly" value="{$info.hostjoinurl}">
+                <i class="glyphicon glyphicon-link lianjie" onclick="" data-clipboard-target="#host"></i>
+            </div>
+            <!--加入者连接-->
+            <div class="join">
+                <span>加入者链接:</span>
+                <input id="join" type="text" readonly="readonly" value="{$info.guestjoinurl}">
+                <i class="glyphicon glyphicon-link join1" onclick="" data-clipboard-target="#join"></i>
+            </div>
+            <!--CMR地址-->
+            <div class="cmr">
+                <span>CMR地址:</span>
+                <input id="cmr" type="text" readonly="readonly" value="{$info.cmrurl}">
+                <i class="glyphicon glyphicon-link cmr1" onclick="" data-clipboard-target="#cmr"></i>
+            </div>
+            <!--直播地址-->
+            <div class="live">
+                <span>直播地址:</span>
+                <input id="live" type="text" readonly="readonly" value="{$info.rtmpurl}">
+                <i class="glyphicon glyphicon-link live1" onclick="" data-clipboard-target="#live"></i>
+            </div>
+            <!--复制全部按钮-->
+            <div class="copy">
+                <a onclick="" class="quanbu" data-clipboard-target="#text">复制全部</a>
+            </div>
+        </div>
+
+        <form>
+
+        </form>
+        <!--返回按钮-->
+        <button class="back" type="submit" onclick="javascript:window.location.href='{:url(\'/webex_list\')}';">返回</button>
+    </div>
+
+    <!--copy 所有部分 -->
+    <form id="text" style="position:absolute;top: 0;opacity: 0;">
+     <p>会议名称：{$info.meetingname}</p>
+     <p>开始时间：{$info.starttime}</p>
+     <p>会议号：{$info.meetingkey}</p>
+     <p>会议密码：{$info.meetingpassword}</p>
+     <p>主持人密钥：{$info.hostpassword}</p>
+     <p>主持人链接：{$info.hostjoinurl}</p>
+     <p>加入者链接：{$info.guestjoinurl}</p>
+     <p>CMR地址：{$info.cmrurl}</p>
+     <p>直播地址：{$info.rtmpurl}</p>
+    </form>
+    <!--从表单copy到<textarea> 再把textarea去掉边框修改css样式让其不可见-->
+    <textarea id="input" name="" cols="0" rows="0" style="border: none;"></textarea>
+
+    <!--<input id="input" style="border: none; width: 0.1px;">-->
+
+    <script src="__WEBEX__/js/jquery.min.js"></script>
+    <script src="__WEBEX__/js/clipboard.min.js"></script>
+    <script type="text/javascript">
+        // copy 主持人连接
+//        function copyText() {
+//            var host = document.getElementById("host");
+//            host.select(); // 选中文本
+//            document.execCommand("copy"); // 执行浏览器复制命令
+//            alert("复制成功");
+//        }
+        
+        var clipboard = new ClipboardJS('.lianjie');
+        clipboard.on('success', function(e) {
+            //console.log(e);
+            alert('复制成功！')
+        });
+        clipboard.on('error', function(e) {
+            console.log(e);
+        });
+        
+        
+        // copy 加入者连接
+//        function copyText1(){
+//            var join = document.getElementById("join");
+//            join.select(); // 选中文本
+//            document.execCommand("copy"); // 执行浏览器复制命令
+//            alert("复制成功");
+//        }
+        
+        var clipboard = new ClipboardJS('.join1');
+        clipboard.on('success', function(e) {
+            //console.log(e);
+            alert('复制成功！')
+        });
+        clipboard.on('error', function(e) {
+            console.log(e);
+        });
+        
+        
+        
+        // copy CMR链接
+//        function copyCmr(){
+//            var cmr = document.getElementById("cmr");
+//            cmr.select(); // 选中文本
+//            document.execCommand("copy"); // 执行浏览器复制命令
+//            alert("复制成功");
+//        }
+        
+        var clipboard = new ClipboardJS('.cmr1');
+        clipboard.on('success', function(e) {
+            //console.log(e);
+            alert('复制成功！')
+        });
+        clipboard.on('error', function(e) {
+            console.log(e);
+        });
+        
+        // copy 直播地址
+//        function copyLive(){
+//            var live = document.getElementById("live");
+//            live.select(); // 选中文本
+//            document.execCommand("copy"); // 执行浏览器复制命令
+//            alert("复制成功");
+//        }
+        
+        var clipboard = new ClipboardJS('.live1');
+        clipboard.on('success', function(e) {
+            //console.log(e);
+            alert('复制成功！')
+        });
+        clipboard.on('error', function(e) {
+            console.log(e);
+        });
+        
+        
+        // copy 全部文本
+//        function fz(){
+//            var text = document.getElementById("text").innerText;
+//            var input = document.getElementById("input");
+//            input.value = text; // 修改文本框的内容
+//            input.select();
+//            document.execCommand("copy"); // 执行浏览器复制命令
+//            alert("复制全部成功");
+//        }
+        
+        var clipboard = new ClipboardJS('.quanbu');
+        clipboard.on('success', function(e) {
+            //console.log(e);
+            alert('复制成功！')
+        });
+        clipboard.on('error', function(e) {
+            console.log(e);
+        });
+        
+        
+        
+    </script>
+</body>
+</html>

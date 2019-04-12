@@ -1,0 +1,217 @@
+.list{
+    width: 100%;
+}
+/*头部样式*/
+.header{
+    width: 100%;
+    background-color: #fff;
+    text-align: center;
+}
+.title{
+    display: flex;
+}
+.title a{
+    cursor:pointer;
+}
+.title a:first-child{
+    width: 50%;
+    text-decoration: none;
+    padding: 17px 0;
+    font-size: 15px;
+}
+.title a:last-child{
+    width: 50%;
+    text-decoration: none;
+    padding: 17px 0;
+    font-size: 15px;
+}
+/*点击title文字样式*/
+.selected{
+    margin-bottom: 0;
+    border-bottom: 2px solid #26a2ff;
+}
+
+/*中间内容部分*/
+.content{
+    width: 100%;
+}
+.middle{
+    text-align: center;
+    padding-bottom: .4rem;
+    width: 92%;
+    margin: 2rem auto;
+    box-shadow: 1px 1px 15px #e5e5e5;
+    position: relative;
+}
+.middle .middle-header{
+    line-height: 6rem;
+    font-size: 2rem;
+    color: #333;
+    font-weight: 700;
+    height: 6rem;
+    padding: .3rem 0;
+    margin: 3.2rem 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #f2e6e6;
+}
+.middle .middle-header>span{
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.middle .middle-header button{
+    border: 0;
+    outline: none;
+    background: #fff;
+    position: absolute;
+    right: 1rem;
+    top: -1.3rem;
+    height: 3px;
+    font-size: 14px;
+    cursor: pointer;
+}
+.middle-center{
+    height: 4rem;
+    line-height: 2rem;
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: 500;
+    padding: 0 .2rem;
+    overflow: hidden;
+}
+.middle-bottom p{
+    height: 2rem;
+    line-height: 2rem;
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: 500;
+    padding: 0 .2rem;
+    overflow: hidden;
+}
+/*是否确定取消会议弹出层*/
+.bg{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    background: rgba(211,211,211,.5);
+}
+.box{
+    display: inline-block;
+    width: 320px;
+    padding-bottom: 10px;
+    vertical-align: middle;
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #ebeef5;
+    font-size: 18px;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+    text-align: left;
+    overflow: hidden;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    margin-top: 300px;
+}
+.box .box-title{
+    position: relative;
+    padding: 15px 15px 10px;
+}
+.box .box-title span{
+    padding-left: 0;
+    margin-bottom: 0;
+    font-size: 18px;
+    line-height: 1;
+    color: #303133;
+}
+.box .box-title button{
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 0;
+    border: none;
+    outline: 0;
+    background: 0 0;
+    font-size: 16px;
+    cursor: pointer;
+}
+.box .box-content {
+    position: relative;
+    padding: 10px 15px;
+    color: #606266;
+    font-size: 14px;
+}
+.box .box-content span{
+    padding-left: 5px;
+    padding-right: 12px;
+}
+.box .box-bottom{
+    padding: 5px 15px 0;
+    text-align: right;
+}
+.box .box-bottom button{
+    display: inline-block;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid #dcdfe6;
+    color: #606266;
+    -webkit-appearance: none;
+    text-align: center;
+    box-sizing: border-box;
+    outline: 0;
+    margin: 0;
+    transition: .1s;
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+.box .box-bottom button:first-child{
+    font-size: 12px;
+    border-radius: 3px;
+    padding: 9px 15px;
+}
+.box .box-bottom button:last-child{
+    color: #fff;
+    background-color: #409eff;
+    border-color: #409eff;
+    font-size: 12px;
+    border-radius: 3px;
+    margin-left: 10px;
+    padding: 9px 15px;
+}
+
+
+
+/*页脚按钮样式*/
+.footer{
+    width: 100%;
+    text-align: center;
+}
+.push{
+    display: flex;
+}
+.push button{
+    position: fixed;
+    bottom: 0;
+    display: block;
+    width: 50%;
+    left: 0;
+    right: 0;
+    color: #fff;
+    background: linear-gradient(90deg,#0882fd,#71bcf5);
+    border: 0;
+    font-size: 20px;
+    line-height: 40px;
+    outline: 0 none;
+    border: none;
+}
+.push button:last-child{
+    left: 50%;
+    background: linear-gradient(90deg,#71bcf5,#0882fd);
+}

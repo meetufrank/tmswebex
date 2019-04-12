@@ -9,6 +9,31 @@
 // | Author: 流年 <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
+
+/*
+ * 二维数组根据键值去重
+ * 
+ */
+
+function assoc_unique($arr, $key) 
+   { 
+     $tmp_arr = array(); 
+     foreach($arr as $k => $v) 
+    { 
+          
+       if(in_array($v[$key], $tmp_arr)){ 
+           
+         unset($arr[$k]); 
+         }else{ 
+        $tmp_arr[] = $v[$key]; 
+          } 
+      
+    }
+    
+    
+       
+     return $arr; 
+  } 
 // 应用公共文件
 /**
  * 把返回的数据集转换成Tree
@@ -106,18 +131,22 @@ function httpRequest($url, $method, $postfields = null, $headers = array(), $deb
     curl_setopt($ci, CURLOPT_MAXREDIRS, 2);/*指定最多的HTTP重定向的数量，这个选项是和CURLOPT_FOLLOWLOCATION一起使用的*/
     curl_setopt($ci, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($ci, CURLINFO_HEADER_OUT, true);
-    /*curl_setopt($ci, CURLOPT_COOKIE, $Cookiestr); * *COOKIE带过去** */
+//    curl_setopt($ci, CURLOPT_COOKIE, $Cookiestr);
     $response = curl_exec($ci);
     $requestinfo = curl_getinfo($ci);
     $http_code = curl_getinfo($ci, CURLINFO_HTTP_CODE);
-    
+    //打印请求的header信息
+    $request_header = curl_getinfo( $ci, CURLINFO_HEADER_OUT);
     if ($debug) {
         echo "=====post data======\r\n";
         var_dump($postfields);
         echo "=====info===== \r\n";
         print_r($requestinfo);
+        echo "=====headers=====\r\n";
+        print_r($request_header);
         echo "=====response=====\r\n";
         print_r($response);
+        
     }
     curl_close($ci);
     return $response;

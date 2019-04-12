@@ -1,0 +1,5 @@
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:74:"/www/web/apics/public_html/public/../application/api/view/index/index.html";i:1536916040;}*/ ?>
+<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"><link rel=icon href=data:image/ico;base64,aWNv><title>WebEx</title><style>.el-message-box{
+    		width: 90%!important;
+    		margin-top:20%!important;
+    	}</style><link href=/static/ceshi/static/css/app.bd4bc6c703a7154e15509d292da3c1de.css?v=1.4 rel=stylesheet></head><body><div id=app></div><script type=text/javascript src=/static/ceshi/static/js/manifest.2ae2e69a05c33dfc65f8.js?v=1.4></script><script type=text/javascript src=/static/ceshi/static/js/vendor.9d091d963239223bf736.js?v=1.4></script><script type=text/javascript src=/static/ceshi/static/js/app.856ea438f427c5340b01.js?v=1.4></script></body></html>

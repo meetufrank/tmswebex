@@ -2,6 +2,7 @@
 namespace app\common\jobs;
 
 use think\queue\Job;
+use think\Db;
 /* 
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -14,7 +15,9 @@ class PexipJob
     private $password="Cisco123";
     private $conference_alias="10000@ketianlive.com";
     private $system_location="BJDC-Internal";
-    
+    private $delete_name='MeetingRoom01';
+
+
     /**
      * 开始执行
      * @param array $data  内容
@@ -22,40 +25,103 @@ class PexipJob
      */
     public function sendlive(Job $job, $data) 
     {
-//        if(cache($data['meetingkey'])){
-//            cache($data['meetingkey'],null);
-//            $job->delete();
-//        }else{
-//            
-//      
-//        if($data['stoptime']>time()){
-//            $time=$data['stoptime']-time();
-//             $job->release($time);
-//        }elseif($data['stoptime']<=time()){
-//           $result=$this->send($data);
-//           $job->delete();
-//        }  
+      
+       try {
+//           file_put_contents(RUNTIME_PATH.'redislog.txt', date('Y-m-d H:i:s').'开始执行删除操作',FILE_APPEND); 
         
-        
-        
-//       }
-        
-        if(!empty($data)&&isset($data['timestamp'])){
-            if($data['timestamp']){
-                if(time()-$data['timestamp']>=10){
-                    $result=$this->send($data);
-                    $job->delete();
-                }else{
-                    $time=time()+10-$data['timestamp'];
-                    $job->release($time);
-                }
-                
-            }
+        //判断队列类型
+       if($data['type']==1){  //创建会议取消入口
+           //判断该会议是否已经在呼叫前取消
+           $m_where=[
+            'pl.delete_time'=>['gt',$data['startime']],
+            'pl.id'=>$data['log_id']
+        ];
+        //获取会议室信息
+        $m_list=Db::connect('zbsql')->name('pexip_log')->alias('pl')
+                ->join(config('zbsql.prefix').'pexip_list p','pl.pexip_id = p.id','left')
+                ->where($m_where)
+                ->field('p.*')
+                ->find();
+        if(empty($m_list)){
+            file_put_contents(RUNTIME_PATH.'redislog.txt', date('Y-m-d H:i:s').'执行删除:步骤1 '.$m_list,FILE_APPEND);
+            $job->delete();
         }else{
-            $this->send($data);  
-            $job->release(60*10);
+            
+            //判断会议是否在会议进行中已经手动取消，还是会议自然结束
+             $m_where2=[
+            'delete_time'=>['lt',$data['stoptime']],
+            'id'=>$data['log_id']
+             ];
+           //获取会议室信息
+            $m_list2=Db::connect('zbsql')->name('pexip_log')
+                ->where($m_where2)
+                ->find();
+            if(!empty($m_list2)){
+                $job->delete();  //手动取消不在执行删除操作了
+            }else{
+                
+            
+            $this->username=$m_list['pexip_name'];
+            $this->password=$m_list['pexip_pwd'];
+            $this->conference_alias=$m_list['conference_alias'];
+            $this->system_location=$m_list['system_location'];
+            $this->delete_name=$m_list['meeting_name'];
+            if ($job->attempts() > 3) {              
+                // 第1种处理方式：重新发布任务,该任务延迟10秒后再执行
+                //$job->release(10); 
+                // 第2种处理方式：原任务的基础上1分钟执行一次并增加尝试次数
+                //$job->failed();   
+                // 第3种处理方式：删除任务
+                 $job->delete();  
+                 }else{
+                    if($data['stoptime']-time()>0){
+                        $rel=$data['stoptime']-time();
+                        file_put_contents(RUNTIME_PATH.'redislog.txt', date('Y-m-d H:i:s').'延迟执行: '.$rel,FILE_APPEND);
+                            $job->release($rel);
+                     }else{
+                       $result=$this->send($data);
+                       $job->delete();  
+                     } 
+                 }
+            }
         }
-       
+       }elseif($data['type']==2){    //删除入口
+           
+            
+              
+               //查询会议信息
+           $m_where=[
+            'pl.stop_time'=>['gt',time()],
+            'pl.id'=>$data['log_id']
+           ];
+            //获取会议室信息
+            $m_list=Db::connect('zbsql')->name('pexip_log')->alias('pl')
+                ->join(config('zbsql.prefix').'pexip_list p','pl.pexip_id = p.id','left')
+                ->where($m_where)
+                ->field('p.*')
+                ->find();
+          
+            if(empty($m_list)){
+               
+                $job->delete();
+            }else{
+                $this->username=$m_list['pexip_name'];
+                $this->password=$m_list['pexip_pwd'];
+                $this->conference_alias=$m_list['conference_alias'];
+                $this->system_location=$m_list['system_location'];
+                $this->delete_name=$m_list['meeting_name'];
+                
+               $result=$this->send($data);
+               $job->delete(); 
+            }
+            
+       }
+    } catch (\Exception $e) {
+        
+        file_put_contents(RUNTIME_PATH.'redislog.txt', date('Y-m-d H:i:s').'删除操作执行异常: '.$e->getMessage(),FILE_APPEND);
+        $job->delete();
+    }
+      
     }
     /**
      * 根据消息中的数据进行实际的业务处理
@@ -69,6 +135,7 @@ class PexipJob
         $arr_header[] = "Content-Type:application/json";
         $arr_header[] = "Authorization: Basic ".$authstr; //添加头，在name和pass处填写对应账号密码
         $result=httpRequest("https://106.38.228.233:65443/api/admin/status/v1/conference/?service_type=conference", 'get', [],$arr_header);
+        file_put_contents(RUNTIME_PATH.'redislog.txt', date('Y-m-d H:i:s').'    '.$result."\n",FILE_APPEND);
         if($result){
             $result=json_decode($result,true);
             if(isset($result['objects'])){
@@ -76,40 +143,18 @@ class PexipJob
                 if(!empty($result['objects'])){
                     $objects=$result['objects'];
                     foreach ($objects as $key => $value) {
+                        
                         $objid=$value['id'];
                         $objname=$value['name'];
-                        $p_result=httpRequest("https://106.38.228.233:65443/api/admin/status/v1/participant/?conference=".$objname, 'get', [],$arr_header);
-                        if($p_result){
-                            $p_result=json_decode($p_result,true);
-                            if(isset($p_result['objects'])){
-                                $p_objects=$p_result['objects'];
-                                $status_arr=[
-                                    'rtmp'=>false,
-                                    'sip'=>false
-                                ];
-                                foreach ($p_objects as $k => $v) {
-                                    if(strtolower($v['protocol'])=='rtmp'){
-                                        $status_arr['rtmp']=true;
-                                    }elseif (strtolower($v['protocol'])=='sip') {
-                                        $status_arr['sip']=true;
-                                    }
-                                    
-                                }
-                                //判断是否sip和rtmp同时存在
-                                if($status_arr['sip']!=$status_arr['rtmp']){
-                                    $json_data=[
+                        
+                        if($objname==$this->delete_name){
+                           
+                         $json_data=[
                                         'conference_id'=>$objid
                                     ];
                                     
-                                   $d_result=httpRequest("https://106.38.228.233:65443/api/admin/command/v1/conference/disconnect/", 'post', json_encode($json_data),$arr_header);
-                                    
-                                }
-//                                $json_data=[
-//                                        'conference_id'=>$objid
-//                                    ];
-//                                    
-//                                   $d_result=httpRequest("https://106.38.228.233:65443/api/admin/command/v1/conference/disconnect/", 'post', json_encode($json_data),$arr_header);
-                            }
+                         $d_result=httpRequest("https://106.38.228.233:65443/api/admin/command/v1/conference/disconnect/", 'post', json_encode($json_data),$arr_header);
+                         return true;
                         }
                     }
                 }

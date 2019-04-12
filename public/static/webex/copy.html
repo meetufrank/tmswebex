@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<div> 1 2 3 4 5 6 7 8 9    1 1 1 1 1 1 1 1  我要复制这个</div>
+    <button class="btn">  Copy  </button>
+
+
+<!--<button class="btn" data-clipboard-text="Just because you can doesn't mean you should — clipboard.js">-->
+    <!--Copy to clipboard-->
+<!--</button>-->
+<script src="clipboard.min.js"></script>
+    <script>
+        var clipboard = new ClipboardJS('.btn', {
+            target: function() {
+                return document.querySelector('div');
+            }
+        });
+
+        clipboard.on('success', function(e) {
+            //console.log(e);
+            alert('复制成功！')
+        });
+
+        clipboard.on('error', function(e) {
+            console.log(e);
+        });
+    </script>
+
+</body>
+</html>

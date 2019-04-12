@@ -1,0 +1,163 @@
+.details{
+    width:100%;
+}
+.content{
+    width: 100%;
+    padding: 0 2rem;
+}
+.content i{
+    color: #0aa1ed;
+}
+/*所有input基础样式*/
+.content input{
+    width: 59%;
+    flex: 1;
+    font-size: 1.5rem;
+    text-align: left;
+    padding-right: .3rem;
+    outline: 0 none;
+    border: none;
+}
+.content div{
+    width: 100%;
+    height: 5rem;
+    line-height: 5rem;
+    color: #0f0f0f;
+    border-bottom: 1px solid #dcdcdc;
+    overflow: hidden;
+}
+
+/*title*/
+.title input{
+    width: 100%;
+    font-size: 3rem;
+}
+
+/*开始时间*/
+.time{
+    width: 100%;
+    display: flex;
+}
+.time span{
+    display: inline-block;
+    font-size: 1.5rem;
+    color: #999;
+    width: 110px;
+}
+
+/*会议号*/
+.huiyi{
+    width: 100%;
+}
+.huiyi span{
+    display: inline-block;
+    font-size: 1.5rem;
+    color: #999;
+    width: 110px;
+}
+/*会议密码*/
+.pwd{
+    width: 100%;
+}
+.pwd span{
+    display: inline-block;
+    font-size: 1.5rem;
+    color: #999;
+    width: 110px;
+}
+/*主持人密钥*/
+.host{
+    width: 100%;
+}
+.host span{
+    display: inline-block;
+    font-size: 1.5rem;
+    color: #999;
+    width: 110px;
+}
+/*主持人连接*/
+.link{
+    width: 100%;
+}
+.link span{
+    display: inline-block;
+    font-size: 1.5rem;
+    color: #999;
+    width: 110px;
+}
+/*加入者连接*/
+.join{
+    width: 100%;
+}
+.join span{
+    display: inline-block;
+    font-size: 1.5rem;
+    color: #999;
+    width: 110px;
+}
+/*CMR地址*/
+.cmr{
+    width: 100%;
+}
+.cmr span{
+    display: inline-block;
+    font-size: 1.5rem;
+    color: #999;
+    width: 110px;
+}
+/*直播地址*/
+.live{
+    width: 100%;
+}
+.live span{
+    display: inline-block;
+    font-size: 1.5rem;
+    color: #999;
+    width: 110px;
+}
+/*复制全部按钮*/
+.copy{
+    width: 100%;
+    border-bottom: 0px !important;
+    text-align: center;
+    margin-top: 20px;
+}
+.copy a{
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-block;
+    border: 1px solid #0aa1ed;
+    height: 40px;
+    width: 80px;
+    background: linear-gradient(90deg,#0882fd,#71bcf5);
+    line-height: 40px;
+    border-radius: 17px;
+}
+/*返回按钮样式*/
+.back{
+    position: fixed;
+    bottom: 0;
+    display: block;
+    width: 100%;
+    left: 0;
+    right: 0;
+    line-height: 4rem;
+    font-size: 2rem;
+    color: #fff;
+    background: linear-gradient(90deg,#0882fd,#71bcf5);
+    outline: 0 none;
+    border: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,97 @@
+.begin{
+    width: 100%;
+}
+.content{
+    width: 100%;
+}
+/*开始时间*/
+.start{
+    position: relative;
+    width: 92%;
+    margin: 30px 4% 30px 4%;
+    height: 5rem;
+    line-height: 5rem;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid #f2e6e6;
+    border-bottom: 1px solid #f2e6e6;
+}
+.start span:first-child{
+    font-size: 17px;
+    padding-left: 10px;
+    font-weight: 300;
+}
+.start span:last-child{
+    color: #666;
+    padding-right: 15px;
+    font-size: 16px;
+    font-weight: 200;
+}
+/*输入框*/
+.shuru{
+    position: relative;
+    width: 92%;
+    height: 40px;
+    margin: 3rem 4%;
+}
+.shuru input{
+    width: 100%;
+    /*height: 100%;*/
+    background: #eee;
+    font-size: 1.2rem;
+    text-indent: 3.5rem;
+    border-radius: 2rem;
+    border: 0;
+    outline:none;
+    height: 3.6rem;
+}
+/*icon 样式*/
+.shuru i{
+    position: absolute;
+    display: inline-block;
+    left: 1rem;
+    top: 1.1rem;
+    font-size: 16px;
+}
+/*选择下拉框位置*/
+.select{
+    position: absolute;
+    top: 10px;
+    left: 97px;
+}
+.select select{
+    border: none;
+    outline: none;
+    background: #eee;
+    /*select 默认下拉箭头*/
+    appearance:none;
+    -moz-appearance:none;
+    -webkit-appearance:none;
+}
+/*下拉图标 icon 位置*/
+.select img{
+    width: 40px;
+    position: relative;
+    left: -13px;
+    top: -1px;
+}
+/*提交按钮*/
+.tijiao{
+    position: fixed;
+    bottom: 0;
+    display: block;
+    width: 100%;
+    left: 0;
+    right: 0;
+    line-height: 4rem;
+    font-size: 2rem;
+    color: #fff;
+    background: linear-gradient(90deg,#0882fd,#71bcf5);
+    outline: 0 none;
+    border: none;
+}
+
+/*点击按钮才显示出来加载按钮*/
+.al{
+    text-align: center;
+}

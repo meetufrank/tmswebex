@@ -1,0 +1,175 @@
+.form{
+    width: 100%;
+    margin-top: 30px;
+}
+/*顶部logo*/
+.logo{
+    width: 100%;
+    margin-top: 3.6rem;
+}
+.logo img{
+    text-align: center;
+    margin: 0 auto;
+}
+/*登陆验证*/
+.input{
+    margin-top: 2.6rem;
+    width: 100%;
+}
+/*站点名称*/
+.com{
+    position: relative;
+    display: flex;
+    width: 80%;
+    margin: 2rem auto;
+}
+.com i{
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    width: 16px;
+    height: 16px;
+}
+.com input{
+    flex: 1;
+    height: 2.6rem;
+    color: #666;
+    text-indent: 2rem;
+    border: 0;
+    border-bottom: 1px solid #1c9cf5;
+    outline:none;
+}
+.com label{
+    display: inline-block;
+    font-weight: 300;
+    font-size: 13px;
+}
+/*用户名*/
+.user{
+    position: relative;
+    display: flex;
+    width: 80%;
+    margin: 2rem auto;
+}
+.user i{
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    top: .5rem;
+}
+.user input{
+    width: 100%;
+    flex: 1;
+    height: 2.6rem;
+    color: #666;
+    text-indent: 2rem;
+    border: 0;
+    border-bottom: 1px solid #1c9cf5;
+    outline:none;
+}
+/*密码*/
+.pwd{
+    position: relative;
+    display: flex;
+    width: 80%;
+    margin: 2rem auto;
+}
+.pwd i:first-child{
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    top: .5rem;
+}
+.pwd input{
+    width: 100%;
+    flex: 1;
+    height: 2.6rem;
+    color: #666;
+    text-indent: 2rem;
+    border: 0;
+    border-bottom: 1px solid #1c9cf5;
+    outline:none;
+}
+.pwd i:last-child{
+    position: absolute;
+    right: 10px;
+    font-size: 16px;
+}
+.pwd .glyphicon-eye-open{
+    position: absolute;
+    right: 10px;
+    font-size: 16px;
+}
+/*隐藏眼睛*/
+.pwd .glyphicon-eye-open{
+    display: none;
+}
+/*拖动滑块验证*/
+.sliderBox{
+    padding: 30px 0;
+}
+.ui-slider-btn .rightRow {
+    content: '';
+    display: inline-block;
+    width: 15px;
+    height: 13px;
+    background: url(../img/php.fw.png) no-repeat -30px -180px;
+    position: absolute;
+    left: 12px;
+    top: 14px;
+}
+.ui-slider-bg{
+    border:1px solid #09bb07;
+    border-right: none;
+}
+
+/*记住账号密码*/
+.remmber{
+    width: 80%;
+    margin: .4rem auto;
+    text-align: right;
+}
+.remmber input{
+    width: 1.3rem;
+    height: 1.3rem;
+    position: relative;
+    top: 3px;
+}
+.remmber label{
+    font-size: .26rem;
+    color: #666;
+}
+/*登陆*/
+.land{
+    margin-top: 2rem;
+    width: 100%;
+    text-align: center;
+}
+.land button{
+    width: 80%;
+    margin: auto;
+    height: 4rem;
+    font-size: 2rem;
+    color: #fff;
+    border: 1px solid #fff;
+    cursor: pointer;
+    background: linear-gradient(90deg,#0882fd,#71bcf5);
+    outline: 0 none;
+    border: none;
+}
+
+
+
+
+/*底部logo样式*/
+.footer{
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    height: 5rem;
+}
+.footer img{
+    width: 100%;
+    height: 100%;
+}

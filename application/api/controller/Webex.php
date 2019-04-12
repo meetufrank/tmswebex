@@ -11,16 +11,38 @@ class Webex extends Base {
     private $sitename;
     private $webexid;
     private $password;
+    private $tmsconfig=array();
+    private $rtmpconfig=array();
+    private $channelconfig=array();
     private $tmsusername="ketiancloud\\api_admin";
     private $tmspassword="P@ss1234";
     private $responseurl;
-    private $isSpecial=false;
+    private $isSpecial=false;  //特殊用户 预留
+    private $dbname='zbsql';
+    private $select_channerid=0;  //被预约的频道ID
 
     public function _initialize() {
-       
+//       $insertdata=[
+//                'channel_id'=>1,
+//                'meeting_id'=>1
+//            ];
+//             Db::connect('zbsql')->name('c_meeting')->insert($insertdata);
+//             exit;
+//       
+//        $zbdb=Db::connect('zbsql')->name('admin')->alias('ad')
+//                ->join(config('zbsql.prefix').'auth_group ag','ad.group_id = ag.group_id','left')
+//                ->field('ad.*,ag.title as groupname')
+//                ->select();
+                
 
-        
+//        print_r($zbdb);exit;
         if(strtolower(Request::instance()->action())!='webexlogin' && strtolower(Request::instance()->action())!='getclientid'){
+          
+            if(input('post.sessionid')){
+                
+               session_id(input('post.sessionid'));
+                
+            }
             
             $this->fieldSet();
         }
@@ -38,8 +60,14 @@ class Webex extends Base {
             $this->sitename= session('sitename')?session('sitename'):$this->needlogin();
             $this->webexid=session('webexid')?session('webexid'):$this->needlogin();
             $this->password=session('password')?session('password'):$this->needlogin();
+            $this->tmsconfig=session('tmsconfig')?session('tmsconfig'):$this->needlogin();
+            $this->rtmpconfig=session('tmsconfig')?session('rtmpconfig'):$this->needlogin();
+            $this->channelconfig=session('tmsconfig')?session('channelconfig'):$this->needlogin();
+            $this->select_channerid=session('select_channerid')?session('select_channerid'):$this->needlogin();
+            
         }
-        $this->requesturl="https://".$this->sitename.".webex.com.cn/WBXService/xml8.0.0/XMLService";
+        
+        $this->requesturl="https://".$this->sitename.".webex.com.cn/WBXService/XMLService";
         $this->ossurl="https://".$this->sitename.".webex.com.cn/WBXService/XMLService";
     }
     /*
@@ -90,21 +118,72 @@ class Webex extends Base {
         $password=input('post.password');
         $sitename=trim(input('post.siteName'));
         
+        
+        //根据登陆的信息查询是否在平台录入
+        $wemap=[
+            'wl.webex_name'=>$webexid,
+            'wl.webex_password'=>$password,
+            'wl.webex_website'=>$sitename,
+//            'wl.userid'=>$userid,
+//            'c.userid'=>$userid,
+//            'ti.userid'=>$userid
+        ];
+        $wedata=Db::connect('zbsql')->name('ch_we_cms')->alias('cwc')
+                ->join(config('zbsql.prefix').'channel c','cwc.channels_id = c.id','left')
+                ->join(config('zbsql.prefix').'webex_list wl','cwc.webex_id = wl.id','left')
+                ->join(config('zbsql.prefix').'tms_list ti','cwc.tms_id = ti.id','left')
+                ->where($wemap)
+                ->field('cwc.*,c.channel_name,c.pushurl,ti.tms_name,ti.tms_password')
+                ->select();
+        //print_r($wedata);exit;
+        if(empty($wedata)){
+            echo $this->buildFailed(-1, '该webex账号您无权限登陆或者未绑定您的频道',[],false);
+            exit;
+        }
+        
+        
+        
+        //整合数组
+        $rtmparr=[];
+        $tmsarr=[];
+        $channelarr=[];
+        foreach ($wedata as $key => $value) {
+            $select_channerid=$value['channels_id'];
+            $rtmp[$value['channels_id']]['rtmpurl']=$value['pushurl'];
+            
+            $tmsarr[$value['channels_id']]['tms_name']=$value['tms_name'];
+            $tmsarr[$value['channels_id']]['tms_password']=$value['tms_password'];
+            
+            $channelarr[$value['channels_id']]['channels_id']=$value['channels_id'];
+            $channelarr[$value['channels_id']]['channel_name']=$value['channel_name'];
+            break;  //执行一次，暂时为一频道一账号
+        }
+        
+//        $tmsarr=assoc_unique($tmsarr,'tms_name');
+        
         $this->responseurl="java:com.webex.service.binding.user.GetUser";
         session('webexid',$webexid);
         session('password',$password);
         session('sitename',$sitename);
+        session('tmsconfig',$tmsarr);
+        session('rtmpconfig',$rtmp);
+        session('channelconfig',$channelarr);
+        session('select_channerid',$select_channerid); //选中的频道ID
+//        session('tmsusername',$wedata['tms_name']);
+//        session('tmspassword',$wedata['tms_password']);
         $this->fieldSet();
-        $postdata=[
-            'webExId'=> $webexid
-        ];
-       $getdata= $this->curlGetData($postdata);   //调用webex接口获取到的数据
- 
-       if(!empty($getdata)){
-           session('userName',$getdata['usefirstName'].$getdata['uselastName']);
-           $getdata=[];
-           $this->buildSuccess($getdata, '登陆成功');
-       }
+        
+//        $postdata=[
+//            'webExId'=> $webexid
+//        ];
+//       $getdata= $this->curlGetData($postdata);   //调用webex接口获取到的数据
+// 
+//       if(!empty($getdata)){
+//           session('userName',$getdata['usefirstName'].$getdata['uselastName']);
+//           $getdata=[];
+//           $this->buildSuccess($getdata, '登陆成功');
+//       }
+       $this->buildSuccess([], '登陆成功');
     }
 
     
@@ -118,7 +197,7 @@ class Webex extends Base {
             'startime'=>strtotime(input('post.meetingStart'))-3*60,
             'stoptime'=>strtotime(input('post.meetingStart'))+input('post.meetduration')*60,
         ];
-        $this->validateMeeting($timedata);
+        $room_id=$this->validateMeeting($timedata);  //验证并获取会议室号
         $this->responseurl="https://tms.ketiancloud.com/tms/external/booking/bookingservice.asmx";
         $postdata=[
             'Conference'=>[
@@ -149,7 +228,8 @@ class Webex extends Base {
                 'IPBandwidth'=>[
                     'Bandwidth'=>'32b/2048kbps'
                 ],
-                'ConferenceLanguage'=>'zh-CN',
+//                'ConferenceLanguage'=>'zh-CN',
+                 'ConferenceLanguage'=>'en_US',
                 'ConferenceTimeZoneRules'=>[
                     'TimeZoneRule'=>[
                         'Id'=>'China Standard Time',
@@ -170,16 +250,30 @@ class Webex extends Base {
         if(empty($result['data'])){
             var_dump($result);exit;
         }
+        
         if(!empty($result)){
             
-                
             
             $data=$result['data']['SaveConferenceResponse']['SaveConferenceResult'];
+           
+            //假设选择的是频道66
+            $channel_id=$this->select_channerid;
+            if(!$data['ConferenceId']){
+                echo $this->buildFailed(-1, '创建会议失败',[],false);
+                exit;
+            }
+            //如果会议未能成功预约出webex，则取消
+            if(!isset($data['ExternalConference']['WebEx'])||empty($data['ExternalConference']['WebEx'])){
+                $de_postdata=$data['ConferenceId'];
+                $result=$this->tmsCurl($de_postdata,'DeleteConferenceById');
+                $status=$this->validclient($result);
+                if(!$status){
+                    $result=$this->tmsCurl($postdata,'DeleteConferenceById');
+                }
+                echo $this->buildFailed(-1, '创建会议失败,请重新创建',[],false);
+                exit;
+            }
             
-            $returndata=[
-             'meetingkey' => $data['ConferenceId']
-            ];
-            //加入sip呼叫队列
             $sipurl='/[1-9]\d*@ketiancloud.com/';
             preg_match($sipurl,$data['ConferenceInfoText'],$siparr);
             if(!empty($siparr)){
@@ -187,6 +281,26 @@ class Webex extends Base {
             }else{
                 $cmrurl='';
             }
+            $p_log_data=[
+                'pexip_id'=>$room_id,
+                'cloud_id'=>$cmrurl,
+                'start_time'=>strtotime($data['StartTimeUTC'])+2*60,
+                'stop_time'=>strtotime($data['EndTimeUTC']),
+                'delete_time'=>strtotime($data['EndTimeUTC']),
+                'channel_id'=> $this->select_channerid
+            ];
+            $log_id=Db::connect('zbsql')->name('pexip_log')->insertGetId($p_log_data);
+            $insertdata=[
+                'channel_id'=>$channel_id,
+                'meeting_id'=>$data['ConferenceId'],
+                'log_id'=>$log_id
+            ];
+            Db::connect('zbsql')->name('c_meeting')->insert($insertdata);
+            $returndata=[
+             'meetingkey' => $data['ConferenceId']
+            ];
+            //加入sip呼叫队列
+          
            
             $queuedata=[
                 'startime'=>strtotime($data['StartTimeUTC'])+2*60,
@@ -194,18 +308,21 @@ class Webex extends Base {
 //                'startime'=>strtotime($data['StartTimeUTC']),
                 'sipurl'=>$cmrurl,
                 'name'=>$data['Title'],
-             
+                'log_id'=>$log_id   //主要判断字段
             ];
             
             Queue::push('app\common\jobs\WebexLive@sendlive', $queuedata, $queue ='webexlive');
+            //获取rtmp地址
             
             //加入rtmp呼叫队列
             $queuertmpdata=[
                 'startime'=>strtotime($data['StartTimeUTC'])+2*60,
                 'meetingkey'=>$data['ConferenceId'],
 //                'startime'=>strtotime($data['StartTimeUTC']),
-                'rtmpurl'=>'rtmp://pubsec.myun.tv/watch/1gba4y?auth_key=2082733261-0-0-e9c7cb4321521807f645465bc45729b3',
-                'name'=>$data['Title']."|直播"
+//                'rtmpurl'=>'rtmp://pubsec.myun.tv/watch/1gba4y?auth_key=2082733261-0-0-e9c7cb4321521807f645465bc45729b3',
+                'rtmpurl'=> $this->rtmpconfig[$channel_id]['rtmpurl'],
+                'name'=>$data['Title']."|直播",
+                'log_id'=>$log_id   //主要判断字段
             ];
             
             Queue::push('app\common\jobs\WebexLiveR@sendlive', $queuertmpdata, $queue ='webexlive');
@@ -214,11 +331,13 @@ class Webex extends Base {
             $queuertmpdata=[
                 'meetingkey'=>$data['ConferenceId'],
                 'stoptime'=>strtotime($data['EndTimeUTC']),
-                'id'=>time()
+                'startime'=>strtotime($data['StartTimeUTC'])+2*60,
+                'log_id'=>$log_id,   //主要判断字段
+                'type'=>1 //取消会议类型 1为创建会议加入的取消队列，2为直接取消会议取消队列
             ];
             
-            Queue::push('app\common\jobs\PexipJob@sendlive', $queuertmpdata, $queue ='PexipJob');
-            
+            Queue::push('app\common\jobs\PexipJob@sendlive', $queuertmpdata, $queue ='pexipjobs');
+//            
             $this->buildSuccess($returndata, '创建成功');
         
         }
@@ -227,64 +346,126 @@ class Webex extends Base {
     
     //验证会议是否冲突
     protected function validateMeeting($timedata) {
-        $this->responseurl="https://tms.ketiancloud.com/tms/external/booking/bookingservice.asmx";
-        $where=[
-            'Pending',
-            'Ongoing'
+        
+        //先查询该频道下是否已经冲突时段的直播会议
+        $c_where=[
+            'channel_id'=> $this->select_channerid,
+            'start_time'=>['elt',$timedata['stoptime']],
+            'delete_time'=>[
+                ['egt',$timedata['startime']],
+                ['egt',time()],
+                ]
         ];
-        foreach ($where as $key => $value) {
-            
-        
-         $postdata=[
-            'ConferenceStatus'=>stripslashes($value)
-        ];
-        $result=$this->tmsCurl($postdata,'GetConferencesForSystems');
-        
-        $status=$this->validclient($result);
-        if(!$status){
-            $result=$this->tmsCurl($postdata,'GetConferencesForSystems');
-        }
-        
-        if(!empty($result['data']['GetConferencesForSystemsResponse']['GetConferencesForSystemsResult'])){
-            $getdata=$result['data']['GetConferencesForSystemsResponse']['GetConferencesForSystemsResult']['Conference'];
-        }else{
-            $getdata=$result['data']['GetConferencesForSystemsResponse']['GetConferencesForSystemsResult'];
-        }
-        
-        
-        $listdata=[];
-        
-        
-        if(!isset($getdata['ConferenceId'])){
-        foreach ($getdata as $key => $value) {
-            if(strtotime($value['StartTimeUTC'])>$timedata['stoptime']||$timedata['startime']>strtotime($value['EndTimeUTC'])){
-                return true;
-            }else{
-                echo $this->buildFailed(-1, '会议时段被占用，请重新选择时间。',[],false); 
-                
-                exit;
-            }
-            $listdata[$key]['starttime']=date('Y-m-d H:i:s', strtotime($value['StartTimeUTC'])+3*60);
-            $listdata[$key]['stoptime']=date('Y-m-d H:i:s', strtotime($value['EndTimeUTC']));
-            $listdata[$key]['meetingkey']=$value['ConferenceId'];
-            $listdata[$key]['meetingname']=$value['Title'];
-            $listdata[$key]['meetstatus']=$value['ConferenceState']['Status'];
-            
-         }
-        }else{
-            if(strtotime($getdata['StartTimeUTC'])>$timedata['stoptime']||$timedata['startime']>strtotime($getdata['EndTimeUTC'])){
-                return true;
-            }else{
-                echo $this->buildFailed(-1, '会议时段被占用，请重新选择时间。',[],false); 
-                
-                exit;
-            }
-           
-        }
-        
-        }
-    }
 
+        $count=Db::connect('zbsql')->name('pexip_log')
+                ->where($c_where)
+                ->count();
+        if($count){
+            echo $this->buildFailed(-1, '该频道在您预约的时间段内已有别会议，请重新选择时间。',[],false); 
+                
+                exit;
+        }
+        //查询当前会议室列表
+        $m_list=Db::connect('zbsql')->name('pexip_list')
+                ->field('id')
+                ->select();
+        
+        //查询是否有空闲的会议室(把时间冲突的会议室id查询出来)
+        $where=[
+            
+            'start_time'=>['elt',$timedata['stoptime']],
+            'delete_time'=>[
+                ['egt',$timedata['startime']],
+                ['egt',time()],
+                ]
+        ];
+        $wedata=Db::connect('zbsql')->name('pexip_log')
+                ->distinct(true)
+                ->field('pexip_id')
+                ->where($where)
+                ->select();
+        if(empty($wedata)&&!empty($m_list)){
+            
+            return $m_list[0]['id'];
+        }else{
+            foreach ($wedata as $key => $value) {
+                foreach ($m_list as $kk => $vv) {
+                   if($value['pexip_id']==$vv['id']){
+                       unset($m_list[$kk]);  
+                   } 
+                }
+            }
+            if(!empty($m_list)){
+                foreach ($m_list as $key => $value) {
+                    $n_m_list[]=$value;
+                }
+                return $n_m_list[0]['id'];
+            }else{
+                echo $this->buildFailed(-1, '无空闲的会议室供您创建会议，请重新选择时间。',[],false); 
+                
+                exit;
+            }
+        }
+        
+//       
+//        $this->responseurl="https://tms.ketiancloud.com/tms/external/booking/bookingservice.asmx";
+//        $where=[
+//            'Pending',
+//            'Ongoing'
+//        ];
+//        foreach ($where as $key => $value) {
+//            
+//        
+//         $postdata=[
+//            'ConferenceStatus'=>stripslashes($value)
+//        ];
+//        $result=$this->tmsCurl($postdata,'GetConferencesForSystems');
+//        
+//        $status=$this->validclient($result);
+//        if(!$status){
+//            $result=$this->tmsCurl($postdata,'GetConferencesForSystems');
+//        }
+//        
+//        if(!empty($result['data']['GetConferencesForSystemsResponse']['GetConferencesForSystemsResult'])){
+//            $getdata=$result['data']['GetConferencesForSystemsResponse']['GetConferencesForSystemsResult']['Conference'];
+//        }else{
+//            $getdata=$result['data']['GetConferencesForSystemsResponse']['GetConferencesForSystemsResult'];
+//        }
+//        
+//        
+//        $listdata=[];
+//        
+//        
+//        if(!isset($getdata['ConferenceId'])){
+//        foreach ($getdata as $key => $value) {
+//            if(strtotime($value['StartTimeUTC'])>$timedata['stoptime']||$timedata['startime']>strtotime($value['EndTimeUTC'])){
+//                return true;
+//            }else{
+//                echo $this->buildFailed(-1, '会议时段被占用，请重新选择时间。',[],false); 
+//                
+//                exit;
+//            }
+//            $listdata[$key]['starttime']=date('Y-m-d H:i:s', strtotime($value['StartTimeUTC'])+3*60);
+//            $listdata[$key]['stoptime']=date('Y-m-d H:i:s', strtotime($value['EndTimeUTC']));
+//            $listdata[$key]['meetingkey']=$value['ConferenceId'];
+//            $listdata[$key]['meetingname']=$value['Title'];
+//            $listdata[$key]['meetstatus']=$value['ConferenceState']['Status'];
+//            
+//         }
+//        }else{
+//            if(strtotime($getdata['StartTimeUTC'])>$timedata['stoptime']||$timedata['startime']>strtotime($getdata['EndTimeUTC'])){
+//                return true;
+//            }else{
+//                echo $this->buildFailed(-1, '会议时段被占用，请重新选择时间。',[],false); 
+//                
+//                exit;
+//            }
+//           
+//        }
+//        
+//        }
+    }
+  
     protected function validclient($result) {
         $resultcode=$result['code'];
         if($resultcode==-1){   //客户端id失效
@@ -314,6 +495,12 @@ class Webex extends Base {
         if(!empty($result)){
             //print_r($result['data']);exit;
             $getdata=$result['data']['GetConferenceByIdResponse']['GetConferenceByIdResult'];
+            if(!isset($getdata['ExternalConference'])){
+                echo $this->buildFailed(-1, '该会议未成功与webex连接，请删除后重新预约。',[],false); 
+                
+                exit;
+            }
+            
             $sipurl='/[1-9]\d*@ketiancloud.com/';
             preg_match($sipurl,$getdata['ConferenceInfoText'],$siparr);
             if(!empty($siparr)){
@@ -321,8 +508,14 @@ class Webex extends Base {
             }else{
                 $cmrurl='';
             }
-            
-            $returndata=[
+            //查询直播地址
+              $channeldata=Db::connect('zbsql')->name('c_meeting')->alias('cm')
+                ->join(config('zbsql.prefix').'channel c','cm.channel_id = c.id','left')
+                ->where(['cm.meeting_id'=>input('post.meetingKey')])
+                ->field('cm.*,c.play_url')
+                ->find();
+              if(isset($getdata['ExternalConference']['WebEx'])){
+                   $returndata=[
                'meetingkey'=>$getdata['ExternalConference']['WebEx']['MeetingKey'],
                'meetingpassword'=>$getdata['ExternalConference']['WebEx']['MeetingPassword'],
                'hostpassword'=>$getdata['ExternalConference']['WebEx']['HostKey'],
@@ -334,8 +527,27 @@ class Webex extends Base {
                'hostjoinurl'=>$getdata['ExternalConference']['WebEx']['HostMeetingUrl'],
                'guestjoinurl'=>$getdata['ExternalConference']['WebEx']['JoinMeetingUrl'],
                'cmrurl'=>$cmrurl,
-               'rtmpurl'=>'http://live.ketianyun.com/watch/2173624'
+//               'rtmpurl'=>'http://live.ketianyun.com/watch/2173624'
+                'rtmpurl'=>$channeldata['play_url']
                ];
+              }else{
+                 $returndata=[
+               'meetingkey'=>'',
+               'meetingpassword'=>'',
+               'hostpassword'=>'',
+               'meetingname'=>$getdata['Title'],
+               'starttime'=>date('Y-m-d H:i:s', strtotime($getdata['StartTimeUTC'])+3*60),
+               'duration'=> (strtotime($getdata['EndTimeUTC'])-strtotime($getdata['StartTimeUTC'])+3*60)/60,
+//               'starttime'=>date('Y-m-d H:i:s', strtotime($getdata['StartTimeUTC'])),
+//               'duration'=> (strtotime($getdata['EndTimeUTC'])-strtotime($getdata['StartTimeUTC']))/60,
+               'hostjoinurl'=>'',
+               'guestjoinurl'=>'',
+               'cmrurl'=>$cmrurl,
+//               'rtmpurl'=>'http://live.ketianyun.com/watch/2173624'
+                'rtmpurl'=>$channeldata['play_url']
+               ]; 
+              }
+            
             
             $this->buildSuccess($returndata, '获取成功');
         }
@@ -345,6 +557,7 @@ class Webex extends Base {
      * TMS会议列表
      */
     public function tmsGetMeetingList() {
+         
         $this->responseurl="https://tms.ketiancloud.com/tms/external/booking/bookingservice.asmx";
         
 //        if(stripslashes(input('post.ConferenceStatus'))=='Finished'){
@@ -457,12 +670,38 @@ class Webex extends Base {
         if(!$status){
             $result=$this->tmsCurl($postdata,'DeleteConferenceById');
         }
-        cache(input('post.meetingKey'),input('post.meetingKey'));
-        $quedata=[
-            'timestamp'=>time()
+//        cache(input('post.meetingKey'),input('post.meetingKey'));
+        //查找会议列表id
+        $p_where=[
+            'meeting_id'=>input('post.meetingKey')
         ];
-        Queue::push('app\common\jobs\PexipJob@sendlive',$quedata, $queue ='PexipJob');
-        $this->buildSuccess([], '删除成功');
+        $wedata=Db::connect('zbsql')->name('c_meeting')
+                ->where($p_where)
+                ->find();
+        if(!empty($wedata)){
+               $d_where=[
+                'id'=>$wedata['log_id']
+               ];
+               $u_data=[
+                   'delete_time'=>time()
+               ];
+               
+               Db::connect('zbsql')->name('pexip_log')
+                       ->where($d_where)
+                       ->update($u_data);
+            $quedata=[
+            'log_id'=>$wedata['log_id'],
+            'type'=>2
+            ];
+            
+            $result=Queue::push('app\common\jobs\PexipJob@sendlive',$quedata, $queue ='pexipjobs');
+            $this->buildSuccess([], '删除成功');
+          
+        }else{
+            echo $this->buildFailed(-1,'未找到该会议',[],false);
+            exit;
+        }
+        
        
     }
     
@@ -526,6 +765,7 @@ class Webex extends Base {
         
         
         $result= xmlToArray($result);
+        
         //判断接口请求是否成功
         if(is_array($result)&&!empty($result)){
             
@@ -581,8 +821,8 @@ class Webex extends Base {
         //session('ClientSession',null);exit;
         $xml=$this->tmsXmlEncode($data,$apiname);
         //TMS账号密码设置头信息
-                    
-        $authstr= base64_encode($this->tmsusername.":". $this->tmspassword);
+        $channelid= $this->select_channerid;            
+        $authstr= base64_encode($this->tmsconfig[$channelid]['tms_name'].":". $this->tmsconfig[$channelid]['tms_password']);
         $arr_header[] = "Content-Type:application/soap+xml";
         $arr_header[] = "Authorization: Basic ".$authstr; //添加头，在name和pass处填写对应账号密码
         $result=httpRequest($this->responseurl, $method, $xml,$arr_header);

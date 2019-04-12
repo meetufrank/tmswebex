@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WebEx</title>
+    <link rel="icon" type="image/x-icon" href="img/logo.png" />
+    <link rel="stylesheet" href="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/list.css">
+</head>
+<body>
+    <div class="list">
+        <!--头部-->
+        <div class="header">
+            <div class="title">
+                <a class="a1 selected">未开始</a>
+                <a class="a2">进行中</a>
+            </div>
+        </div>
+        <!--内容-->
+        <div class="content">
+            <div class="middle">
+                <div class="middle-header">
+                    <span>会议名称：直播会议</span>
+                    <button type="button" id="btn"> <span style="color: #409eff;">X</span> </button>
+                </div>
+                <div class="middle-center">
+                    <span>会议未开始</span>
+                </div>
+                <div class="middle-bottom">
+                    <p>开始时间 2018-12-06 13:50:00</p>
+                    <p>结束时间 2018-12-06 16:30:00</p>
+                </div>
+            </div>
+        </div>
+        <!--点击右上角 ❌ 团出确定关闭弹出层-->
+        <!--背景色-->
+        <div class="bg" style="display: none;">
+            <div class="box">
+                <div class="box-title">
+                    <span>提示</span>
+                    <button> <i class="	glyphicon glyphicon-remove no"></i> </button>
+                </div>
+                <div class="box-content">
+                    <i class="	glyphicon glyphicon-exclamation-sign" style="color: #e5830f;"></i>
+                    <span>是否取消会议？</span>
+                </div>
+                <div class="box-bottom">
+                    <button class="btn1"> <span>取消</span> </button>
+                    <button class="btn2"> <span>确定</span> </button>
+                </div>
+            </div>
+        </div>
+        <!--页脚-->
+        <div class="footer">
+            <div class="push">
+                <button>预约</button>
+                <button>立即开始</button>
+            </div>
+        </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script>
+        $(function(){
+            $('.a2').click(function(){
+                $(this).css('border-bottom','2px solid #26a2ff');
+                $(this).css('margin-bottom','0');
+                $('.a1').css('border','0');
+            });
+            $('.a1').click(function(){
+                $(this).css('border-bottom','2px solid #26a2ff');
+                $(this).css('margin-bottom','0');
+                $('.a2').css('border','0');
+            });
+        });
+        // 点击 ❌ 弹出确定弹出层
+        $('#btn span').click(function(){
+           $('.bg').show();
+        });
+
+        $('.no').click(function(){
+           $('.bg').hide();
+        });
+
+        $('.btn1').click(function(){
+           $('.bg').hide();
+        });
+        $('.btn2').click(function(){
+           $('.bg').hide();
+           $('.content').hide();
+        });
+
+    </script>
+</body>
+</html>

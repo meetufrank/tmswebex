@@ -11,7 +11,7 @@ namespace app\api\controller;
 use app\util\ApiLog;
 use app\util\ReturnCode;
 use think\Controller;
-
+use think\Session;
 class Base extends Controller {
 
     private $debug = [];
@@ -22,15 +22,18 @@ class Base extends Controller {
     }
 
     public function buildSuccess($data, $msg = '操作成功', $code = ReturnCode::SUCCESS) {
+       
+        
         $return = [
             'code' => $code,
             'msg'  => $msg,
-            'data' => $data
+            'data' => $data,
+            'sessionid'=> session_id()
         ];
         if ($this->debug) {
             $return['debug'] = $this->debug;
         }
-
+        ob_clean();
         echo json_encode($return);
         exit;
     }
@@ -39,12 +42,13 @@ class Base extends Controller {
         $return = [
             'code' => $code,
             'msg'  => $msg,
-            'data' => $data
+            'data' => $data,
+            'sessionid'=> session_id()
         ];
         if ($this->debug) {
             $return['debug'] = $this->debug;
         }
-       
+       ob_clean();
        echo json_encode($return);
        exit;
     }

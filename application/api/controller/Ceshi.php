@@ -67,8 +67,11 @@ class Ceshi extends Base {
 //        
 //    }
     public function ceshi() {
-        
-//        Queue::push('app\common\jobs\PexipJob@sendlive', [], $queue ='PexipJob');
+        $quedata=[
+            'log_id'=>77,
+            'type'=>2
+            ];
+       Queue::push('app\common\jobs\PexipJob@sendlive', $quedata, $queue ='pexipjobs');   //启动pexip进程
     }
     
 }

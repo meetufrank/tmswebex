@@ -1,0 +1,5 @@
+---------------------------------------------------------------
+[ 2018-12-05T16:56:24+08:00 ] 127.0.0.1 GET /webex_login
+[ info ] test.apiadmin.com:8080/webex_login [运行时间：0.466511s][吞吐率：2.14req/s] [内存消耗：1,538.23kb] [文件加载：25]
+[ error ] [8]Use of undefined constant __STATIC__ - assumed '__STATIC__'[E:\www\apiadmin\application\config.php:145]
+[ info ] [ LOG ] INIT File

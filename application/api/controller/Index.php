@@ -4,10 +4,10 @@ namespace app\api\controller;
 
 use think\Db;
 use think\queue;
-use Aliyun\Oss;
 class Index extends Base {
     public function index() {
-      
+        
+        
         return view();
         $this->debug([
             'TpVersion' => THINK_VERSION

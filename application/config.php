@@ -249,7 +249,7 @@ return [
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址
-    'hostname'        => 'rm-bp19d3e41secoh6wa.mysql.rds.aliyuncs.com:3306',
+    'hostname'        => 'rm-bp19d3e41secoh6wao.mysql.rds.aliyuncs.com',
     // 数据库名
     'database'        => 'zbcms',
     // 用户名
@@ -257,7 +257,7 @@ return [
     // 密码
     'password'        => 'Cisco123!@#',
     // 端口
-    'hostport'        => '',
+    'hostport'        => '3306',
     // 连接dsn
     'dsn'             => '',
     // 数据库连接参数

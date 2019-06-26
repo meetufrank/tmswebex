@@ -1,0 +1,33 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="textml; charset=utf-8"/>
+</head>
+<body>
+<font size="5" >WebEx XML API Test Page</font>
+<br>
+<br>
+<form action=
+https://ktyb.webex.com.cn/WBXService/XMLService
+method=get>
+<textarea rows =22 columns = 50 cols="88" name="XML">
+<?xml version="1.0" encoding="UTF-8"?>
+<message xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<header>
+<securityContext>
+<siteName> ktyb </siteName>
+<webExID> apiadmin </webExID>
+<password> Mmppjjbb1$ </password>
+</securityContext>
+</header>
+<body>
+<bodyContent xsi:type="java:com.webex.service.binding.user.GetUser">
+<webExId> WebexID </webExId>
+</bodyContent>
+</body>
+</message>
+</textarea>
+<br>
+<input name="submit" type="submit" value="submit">
+</form>
+</body>
+</html>

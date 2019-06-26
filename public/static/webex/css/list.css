@@ -34,6 +34,7 @@
 /*中间内容部分*/
 .content{
     width: 100%;
+    margin-bottom:2rem; /* 新增加的样式 让每一块都增加下边距 */
 }
 .middle{
     text-align: center;
@@ -62,17 +63,31 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.middle .middle-header button{
-    border: 0;
-    outline: none;
-    background: #fff;
+/*.middle .middle-header button{*/
+    /*border: 0;*/
+    /*outline: none;*/
+    /*background: #fff;*/
+    /*position: absolute;*/
+    /*right: 1rem;*/
+    /*top: -1.3rem;*/
+    /*height: 3px;*/
+    /*font-size: 14px;*/
+    /*cursor: pointer;*/
+/*}*/
+/*更改叉号的样式*/
+.btndelete{
     position: absolute;
-    right: 1rem;
-    top: -1.3rem;
-    height: 3px;
+    top: 0;
+    right: 2rem;
     font-size: 14px;
+    width: 30px;  /* 让叉号作用域变得大一点 */
+    text-decoration: none;
+}
+.btndelete:hover{
+    text-decoration: none;
     cursor: pointer;
 }
+
 .middle-center{
     height: 4rem;
     line-height: 2rem;

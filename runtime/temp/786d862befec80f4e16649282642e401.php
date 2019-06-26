@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:65:"E:\www\apiadmin\public/../application/index\view\index\login.html";i:1544783691;}*/ ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -91,8 +89,13 @@
     <script>
        
             function checkUserName(username){
-                if ((/^[\u4E00-\u9FA5A-Za-z]+$/.test(username))) {
-                    return true;
+//                if ((/^[\u4E00-\u9FA5A-Za-z]+$/.test(username))) {
+//                    return true;
+//                }else{
+//                    return false;
+//                }
+                if(username.length>2){
+                     return true;
                 }else{
                     return false;
                 }

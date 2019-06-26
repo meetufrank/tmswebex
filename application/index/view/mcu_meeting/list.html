@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>会议列表</title>
+    <link rel="icon" type="image/x-icon" href="__WEBEX__/img/logo.png" />
+    <link rel="stylesheet" href="__WEBEX__/bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__WEBEX__/css/list.css">
+</head>
+<body>
+    <div class="list">
+        <!--头部-->
+        <div class="header">
+            <div class="title">
+                <a class="a1 {if condition='$type eq 1'}selected{/if}" href="{:url('/meeting_list',['type'=>1])}">未开始</a>
+                <a class="a2 {if condition='$type neq 1'}selected{/if}" href="{:url('/meeting_list',['type'=>2])}"> 进行中</a>
+            </div>
+        </div>
+        <!--内容-->
+        {foreach name="list" item='li'}
+        <div class="content adlist{$li.meetingkey}" onclick="javascript:window.location.href='{:url(\'/meeting_info\',[\'meetid\'=>$li.meetingkey])}';">
+            <div class="middle">
+                <div class="middle-header">
+                    <span>会议名称：{$li.meetingname}</span>
+                    <button type="button" id="btn{$li.meetingkey}" class="btndelete"  > <span style="color: #409eff;" data-id="{$li.meetingkey}">X</span> </button>
+                </div>
+                <div class="middle-center">
+                    <span>会议{if condition='$li.meetstatus eq "Pending"'}未开始{elseif condition='$li.meetstatus eq "Ongoing"'}进行中{/if}</span>
+                </div>
+                <div class="middle-bottom">
+                    <p>开始时间 {$li.starttime}</p>
+                    <p>结束时间 {$li.stoptime}</p>
+                </div>
+            </div>
+        </div>
+        <!--点击右上角 ❌ 团出确定关闭弹出层-->
+        <!--背景色-->
+        <div class="bg bg{$li.meetingkey}" style="display: none;">
+            <div class="box">
+                <div class="box-title">
+                    <span>提示</span>
+                    <button> <i class="	glyphicon glyphicon-remove no"  data-id="{$li.meetingkey}"></i> </button>
+                </div>
+                <div class="box-content">
+                    <i class="	glyphicon glyphicon-exclamation-sign" style="color: #e5830f;"></i>
+                    <span>是否取消会议？</span>
+                </div>
+                <div class="box-bottom">
+                    <button class="btn1"  data-id="{$li.meetingkey}" > <span>取消</span> </button>
+                    <button class="btn2" data-id="{$li.meetingkey}"> <span>确定</span> </button>
+                </div>
+            </div>
+        </div>
+        {/foreach}
+        <!--页脚-->
+        <div class="footer">
+            <div class="push">
+                <button onclick="javascript:window.location.href='{:url(\'/meeting_create\')}';">预约</button>
+                <button onclick="javascript:window.location.href='{:url(\'/meeting_begin\')}';">立即开始</button>
+            </div>
+        </div>
+    </div>
+    <script src="__WEBEX__/js/jquery.min.js"></script>
+    <script>
+        $(function(){
+            $('.a2').click(function(){
+                $(this).css('border-bottom','2px solid #26a2ff');
+                $(this).css('margin-bottom','0');
+                $('.a1').css('border','0');
+            });
+            $('.a1').click(function(){
+                $(this).css('border-bottom','2px solid #26a2ff');
+                $(this).css('margin-bottom','0');
+                $('.a2').css('border','0');
+            });
+        });
+        // 点击 ❌ 弹出确定弹出层
+        $('.btndelete span').click(function(event){
+           var key=$(this).attr("data-id");
+           $('.bg'+key).show();
+           event.stopPropagation();
+        });
+
+        $('.no').click(function(){
+            var key=$(this).attr("data-id");
+         
+           $('.bg'+key).hide();
+        });
+
+        $('.btn1').click(function(){
+           var key=$(this).attr("data-id");
+         
+           $('.bg'+key).hide();
+        });
+        
+        $('.btn2').click(function(){
+           
+           
+           var key=$(this).attr("data-id");
+           $('.bg'+key).hide();
+           $('.adlist'+key).hide();
+           
+           $.ajax({
+                        type:"POST",
+                        url:"/meeting_delete",
+                        dataType: "json",
+                        data:{"meetingKey":key},
+                        success: function(data){
+                            if(data.code == -1){
+                            layer.open({
+                                    content: data.msg
+                                    ,skin: 'msg'
+                                    ,time: 2 //2秒后自动关闭
+                                });
+                            }
+                            if(data.code == -7){
+                                
+                                window.location.href="{:url('/meeting_login')}";
+                            }
+                        }
+                    });
+        });
+
+    </script>
+</body>
+</html>

@@ -101,7 +101,7 @@
             $(".tijiao").attr('disabled',true);  
             $.ajax({
                         type:"POST",
-                        url:"/webex_create",
+                        url:"/meeting_create",
                         dataType: "json",
                         data:{"meetingStart":meetingStart,"meetduration":meetduration},
                         success: function(data){
@@ -117,13 +117,13 @@
                             }
                             if(data.code == -7){
                                 
-                                window.location.href="{:url('/webex_login')}";
+                                window.location.href="{:url('/meeting_login')}";
                             }
                             if(data.code == 1){
                                 if(data.data.meetingkey){
-                                    window.location.href="/webex_info/meetid/"+data.data.meetingkey;
+                                    window.location.href="/meeting_info/meetid/"+data.data.meetingkey;
                                 }else{
-                                    window.location.href="{:url('/webex_list')}";
+                                    window.location.href="{:url('/meeting_list')}";
                                 }
                                  
                             }

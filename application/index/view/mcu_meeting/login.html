@@ -1,4 +1,3 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:65:"E:\www\apiadmin\public/../application/index\view\index\login.html";i:1552198720;}*/ ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -7,9 +6,9 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>webex登陆</title>
-    <link rel="stylesheet" href="/static/webex/bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/webex/css/login.css">
-    <link rel="stylesheet" href="/static/webex/css/jquery.slider.css">
+    <link rel="stylesheet" href="__WEBEX__/bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__WEBEX__/css/login.css">
+    <link rel="stylesheet" href="__WEBEX__/css/jquery.slider.css">
     
     <!--基础样式-->
     <style>
@@ -33,25 +32,25 @@
     <div class="form">
         <!--头部logo-->
         <div class="logo">
-            <img src="/static/webex/img/logo.png" class="img-responsive">
+            <img src="__WEBEX__/img/logo.png" class="img-responsive">
         </div>
         <!--登陆验证-->
         <div class="input">
             <!--站点名称-->
             <div class="com">
                 <i class="	glyphicon glyphicon-globe"></i>
-                <input type="text" placeholder="请输入站点名称" class="write" id="write" data-foolish-msg="请输入站点名称" value="<?php echo $re_siteName; ?>">
+                <input type="text" placeholder="请输入站点名称" class="write" id="write" data-foolish-msg="请输入站点名称" value="{$re_siteName}">
                 <label>.webex.com.cn</label>
             </div>
             <!--用户名-->
             <div class="user">
                 <i class="glyphicon glyphicon-user"></i>
-                <input type="text" placeholder="请输入账号" class="username" id="name" data-foolish-msg="请输入您的账号" value="<?php echo $re_webExId; ?>">
+                <input type="text" placeholder="请输入账号" class="username" id="name" data-foolish-msg="请输入您的账号" value="{$re_webExId}">
             </div>
             <!--密码-->
             <div class="pwd">
                 <i class="	glyphicon glyphicon-lock"></i>
-                <input type="password" placeholder="请输入密码" class="userpwd" id="pwd" data-foolish-msg="请输入您的密码" value="<?php echo $re_password; ?>">
+                <input type="password" placeholder="请输入密码" class="userpwd" id="pwd" data-foolish-msg="请输入您的密码" value="{$re_password}">
                 <i class="	glyphicon glyphicon-eye-open"></i>
                 <i class=" glyphicon glyphicon-eye-close"></i>
             </div>
@@ -78,14 +77,14 @@
     </div>
     <!--底部logo-->
     <div class="footer">
-        <img src="/static/webex/img/footer.png" class="img-responsive">
+        <img src="__WEBEX__/img/footer.png" class="img-responsive">
     </div>
-    <script src="/static/webex/js/jquery.min.js"></script>
-    <script src="/static/webex/js/jquery-1.12.1.min.js"></script>
-    <script src="/static/webex/js/jquery.slider.min.js"></script>
-    <script src="/static/webex/js/login.js"></script>
-    <script src="/static/webex/js/huakuai.js"></script>
-    <script src="/static/webex/layer.mobile-v2.0/layer.mobile-v2.0/layer_mobile/layer.js"></script>
+    <script src="__WEBEX__/js/jquery.min.js"></script>
+    <script src="__WEBEX__/js/jquery-1.12.1.min.js"></script>
+    <script src="__WEBEX__/js/jquery.slider.min.js"></script>
+    <script src="__WEBEX__/js/login.js"></script>
+    <script src="__WEBEX__/js/huakuai.js"></script>
+    <script src="__WEBEX__/layer.mobile-v2.0/layer.mobile-v2.0/layer_mobile/layer.js"></script>
     <!-- 验证 -->
     <script>
        
@@ -142,7 +141,7 @@
                 if(valid){
                     $.ajax({
                         type:"POST",
-                        url:"<?php echo url('/webex_postlogin'); ?>",
+                        url:"{:url('/meeting_postlogin')}",
                         dataType: "json",
                         data:{"webExId":UserName,"password":UserPwd,"siteName":Matterconter,"remember":remember},
                         success: function(data){
@@ -153,9 +152,9 @@
                                 });
                             if(data.code == -7){
                                 
-                                window.location.href="<?php echo url('/webex_login'); ?>";
+                                window.location.href="{:url('/meeting_login')}";
                             }else if(data.code == 1){
-                                window.location.href="<?php echo url('/webex_list'); ?>";
+                                window.location.href="{:url('/meeting_list')}";
                             }
                         }
                     });

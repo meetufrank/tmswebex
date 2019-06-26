@@ -4,7 +4,7 @@ namespace app\api\controller;
 use think\Db;
 use think\Request;
 use think\Queue;
-class Webex extends Base {
+class McuMeeting extends Base {
     
     private $requesturl;
     private $ossurl;

@@ -2,6 +2,15 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/E:/www/apiadmin/application/common/logic/McuLogic.php</file>
+            <file>file:/E:/www/apiadmin/application/common/jobs/WebexLive.php</file>
+            <file>file:/E:/www/apiadmin/application/common/jobs/PexipJob.php</file>
+            <file>file:/E:/www/apiadmin/application/index/controller/Ceshi.php</file>
+            <file>file:/E:/www/apiadmin/extend/phpxmlrpc/Request.php</file>
+            <file>file:/E:/www/apiadmin/application/indexRoute.php</file>
+            <file>file:/E:/www/apiadmin/application/common/logic/Logic.php</file>
+            <file>file:/E:/www/apiadmin/application/api/controller/Webex.php</file>
+        </group>
     </open-files>
 </project-private>

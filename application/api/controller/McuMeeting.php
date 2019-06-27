@@ -285,52 +285,43 @@ class McuMeeting extends Base {
                 $cmrurl='';
             }
             $p_log_data=[
-                'pexip_id'=>$room_id,
+                'mcu_id'=>$room_id,
                 'cloud_id'=>$cmrurl,
                 'start_time'=>strtotime($data['StartTimeUTC'])+2*60,
                 'stop_time'=>strtotime($data['EndTimeUTC']),
                 'delete_time'=>strtotime($data['EndTimeUTC']),
                 'channel_id'=> $this->select_channerid
             ];
-            $log_id=Db::connect('zbsql')->name('pexip_log')->insertGetId($p_log_data);
+            $log_id=Db::connect('zbsql')->name('meeting_log')->insertGetId($p_log_data);
             $insertdata=[
                 'channel_id'=>$channel_id,
                 'meeting_id'=>$data['ConferenceId'],
-                'log_id'=>$log_id
+                'log_id'=>$log_id,
+                'call_work'=>2
             ];
             Db::connect('zbsql')->name('c_meeting')->insert($insertdata);
             $returndata=[
              'meetingkey' => $data['ConferenceId']
             ];
-            //加入sip呼叫队列
+            //加入sip和rtmp呼叫队列
           
            
             $queuedata=[
                 'startime'=>strtotime($data['StartTimeUTC'])+2*60,
                 'meetingkey'=>$data['ConferenceId'],
-//                'startime'=>strtotime($data['StartTimeUTC']),
                 'sipurl'=>$cmrurl,
-                'name'=>$data['Title'],
-                'log_id'=>$log_id   //主要判断字段
-            ];
-            
-            Queue::push('app\common\jobs\WebexLive@sendlive', $queuedata, $queue ='webexlive');
-            //获取rtmp地址
-            
-            //加入rtmp呼叫队列
-            $queuertmpdata=[
-                'startime'=>strtotime($data['StartTimeUTC'])+2*60,
-                'meetingkey'=>$data['ConferenceId'],
-//                'startime'=>strtotime($data['StartTimeUTC']),
-//                'rtmpurl'=>'rtmp://pubsec.myun.tv/watch/1gba4y?auth_key=2082733261-0-0-e9c7cb4321521807f645465bc45729b3',
                 'rtmpurl'=> $this->rtmpconfig[$channel_id]['rtmpurl'],
-                'name'=>$data['Title']."|直播",
-                'log_id'=>$log_id   //主要判断字段
+                'name'=>$data['Title'],
+                'is_live'=>1,
+                'log_id'=>$log_id ,  //主要判断字段
             ];
             
-            Queue::push('app\common\jobs\WebexLiveR@sendlive', $queuertmpdata, $queue ='webexlive');
+            Queue::push('app\common\jobs\McuCall@sendlive', $queuedata, $queue ='mcucall');
+         
             
-            //加入pexip队列
+          
+            
+            //加入删除队列
             $queuertmpdata=[
                 'meetingkey'=>$data['ConferenceId'],
                 'stoptime'=>strtotime($data['EndTimeUTC']),
@@ -339,7 +330,7 @@ class McuMeeting extends Base {
                 'type'=>1 //取消会议类型 1为创建会议加入的取消队列，2为直接取消会议取消队列
             ];
             
-            Queue::push('app\common\jobs\PexipJob@sendlive', $queuertmpdata, $queue ='pexipjobs');
+            Queue::push('app\common\jobs\McuStop@sendlive', $queuertmpdata, $queue ='mcustop');
 //            
             $this->buildSuccess($returndata, '创建成功');
         
@@ -360,7 +351,7 @@ class McuMeeting extends Base {
                 ]
         ];
 
-        $count=Db::connect('zbsql')->name('pexip_log')
+        $count=Db::connect('zbsql')->name('meeting_log')
                 ->where($c_where)
                 ->count();
         if($count){
@@ -369,7 +360,7 @@ class McuMeeting extends Base {
                 exit;
         }
         //查询当前会议室列表
-        $m_list=Db::connect('zbsql')->name('pexip_list')
+        $m_list=Db::connect('zbsql')->name('mcu_list')
                 ->field('id')
                 ->select();
         
@@ -382,9 +373,9 @@ class McuMeeting extends Base {
                 ['egt',time()],
                 ]
         ];
-        $wedata=Db::connect('zbsql')->name('pexip_log')
+        $wedata=Db::connect('zbsql')->name('meeting_log')
                 ->distinct(true)
-                ->field('pexip_id')
+                ->field('mcu_id')
                 ->where($where)
                 ->select();
         if(empty($wedata)&&!empty($m_list)){
@@ -393,7 +384,7 @@ class McuMeeting extends Base {
         }else{
             foreach ($wedata as $key => $value) {
                 foreach ($m_list as $kk => $vv) {
-                   if($value['pexip_id']==$vv['id']){
+                   if($value['mcu_id']==$vv['id']){
                        unset($m_list[$kk]);  
                    } 
                 }
@@ -676,12 +667,12 @@ class McuMeeting extends Base {
 //        cache(input('post.meetingKey'),input('post.meetingKey'));
         //查找会议列表id
         $p_where=[
-            'meeting_id'=>input('post.meetingKey')
+            'meeting_id'=>input('post.meetingKey'),
         ];
         $wedata=Db::connect('zbsql')->name('c_meeting')
                 ->where($p_where)
                 ->find();
-        if(!empty($wedata)){
+        if(!empty($wedata)&&$wedata['call_work']==2){
                $d_where=[
                 'id'=>$wedata['log_id']
                ];
@@ -689,7 +680,7 @@ class McuMeeting extends Base {
                    'delete_time'=>time()
                ];
                
-               Db::connect('zbsql')->name('pexip_log')
+               Db::connect('zbsql')->name('meeting_log')
                        ->where($d_where)
                        ->update($u_data);
             $quedata=[
@@ -697,11 +688,11 @@ class McuMeeting extends Base {
             'type'=>2
             ];
             
-            $result=Queue::push('app\common\jobs\PexipJob@sendlive',$quedata, $queue ='pexipjobs');
+            $result=Queue::push('app\common\jobs\McuStop@sendlive',$quedata, $queue ='mcustop');
             $this->buildSuccess([], '删除成功');
           
         }else{
-            echo $this->buildFailed(-1,'未找到该会议',[],false);
+            echo $this->buildFailed(-1,'未找到该会议或使用了错误的客户端',[],false);
             exit;
         }
         

@@ -40,7 +40,7 @@ class McuLogic extends Logic {
         // let the native xmlrpc extension take care of encoding request parameters
         $r = $c->send($params);
 
-        $this->response_msg($r);
+        return $this->response_msg($r);
         
         
     }
@@ -50,8 +50,8 @@ class McuLogic extends Logic {
      */
    public function response_msg($r=array(),$msg=''){
        if ($r->faultCode()){ //失败时
-           print "An error occurred: ";
-           print "Code: " . htmlspecialchars($r->faultCode()) . " Reason: '" . htmlspecialchars($r->faultString()) . "'\n";
+//           return "An error occurred: ";
+           return "Code: " . htmlspecialchars($r->faultCode()) . " Reason: '" . htmlspecialchars($r->faultString()) . "'\n";
         }else
         {
           
@@ -61,32 +61,32 @@ class McuLogic extends Logic {
            switch ($value) {
                case 0:
 
-               echo '成功';
+               return '成功';
                    break;
                case 1:
 
-               echo '其它错误';
+               return '其它错误';
                    break;
                case 2:
 
-               echo '资源不存在';
+               return '资源不存在';
                    break;
                case 3:
 
-               echo '超出资源限制';
+               return '超出资源限制';
                    break;
                case 4:
 
-               echo '已经存在';
+               return '已经存在';
                    break;
                case 5:
 
-               echo '资源忙';
+               return '资源忙';
                    break;
 
                default:
                    
-                echo '意料之外的错误';
+                return '意料之外的错误';
                    break;
            }
            
@@ -116,28 +116,19 @@ class McuLogic extends Logic {
     /*
      * 添加sip终端和rtmp终端到mcu
      */
-    public function add_terminals($meetname,$sipurl,$rtmpurl){  //会议室名称，sip地址，rtmp地址
-        //拆分sip地址
-        $siparr=@explode('@',$sipurl,2);
-        $sip_num=$siparr[0];
-        $sip_domain=$siparr[1];
-        
-        //创建sip终端名称
-        $sip_terminal_name=$meetname.'|sip';
+    public function add_terminals($meetname,$sipurl='',$rtmpurl=''){  //会议室名称，sip地址，rtmp地址
+    
+        if(!empty($sipurl)){
+           //拆分sip地址
+            $siparr=@explode('@',$sipurl,2);
+            $sip_num=$siparr[0];
+            $sip_domain=$siparr[1];
 
-        //创建rtmp终端名称
-        $rtmp_terminal_name=$meetname.'|live';
-        
-        
-        
-        //创建xml参数
-        $params=new Value(
-               
-                    new Value(
-                        array(
-                            '_calls'=>new Value(
-                            array(
-                                new Value(
+            //创建sip终端名称
+            $sip_terminal_name= $this->get_terminal_name($meetname,'sip'); 
+            
+            //构造呼叫sip参数集
+            $sipobj=new Value(
                                         array(
                                             '_name'=> new Value($sip_terminal_name,'string'),
                                             '_sortname' => new Value('','string'),
@@ -179,8 +170,13 @@ class McuLogic extends Logic {
                                                                ,'struct')
                                                     )
                                                     ,'array')
-                                        ),'struct'),
-                                new Value(
+                                        ),'struct');
+        }
+        if(!empty($rtmpurl)){
+            //创建rtmp终端名称
+           $rtmp_terminal_name=$this->get_terminal_name($meetname,'rtmp'); ;
+           //构造rtmp推流参数集
+           $rtmpobj=new Value(
                                         array(
                                             '_name'=>new Value($rtmp_terminal_name,'string'),
                                             '_sortname'=>new Value('','string'),
@@ -207,7 +203,7 @@ class McuLogic extends Logic {
                                                                    '_codec'=>new Value(9,'int'),
                                                                    '_bitrate'=>new Value(0,'int'),
                                                                    '_fps'=>new Value(30,'int'),
-                                                                   '_sizes'=>new Value('1280x720','string')
+                                                                   '_sizes'=>new Value('1920x1080','string')
                                                                 )
                                                                 ,'struct'),
                                                         new Value(
@@ -216,14 +212,35 @@ class McuLogic extends Logic {
                                                                    '_codec'=>new Value(9,'int'),
                                                                    '_bitrate'=>new Value(0,'int'),
                                                                    '_fps'=>new Value(30,'int'),
-                                                                   '_sizes'=>new Value('1280x720','string')
+                                                                   '_sizes'=>new Value('1920x1080','string')
                                                                 )
                                                                 ,'struct')
                                                     )
                                                     ,'array')
                                         )
-                                        ,'struct')
-                            )
+                                        ,'struct');
+        }
+
+        $all_arr=[];
+       if(!empty($sipobj)&&!empty($rtmpobj)){
+           $all_arr=array($sipobj,$rtmpobj);
+       }elseif(empty($sipobj)&&!empty($rtmpobj)){
+           $all_arr=array($rtmpobj);
+       }elseif(!empty($sipobj)&&empty($rtmpobj)){
+           $all_arr=array($rtmpobj);
+       }else{
+           return true;
+       }
+        
+        
+        
+        //创建xml参数
+        $params=new Value(
+               
+                    new Value(
+                        array(
+                            '_calls'=>new Value(
+                            $all_arr
                             ,'array')
                         )
                         ,'struct')
@@ -233,9 +250,27 @@ class McuLogic extends Logic {
        
         
         $this->send_msg('add_terminals', $params);
+        
+        //返回终端名称
+        $result=[
+            'sipname'=>$sip_terminal_name,
+            'rtmpname'=>$rtmp_terminal_name
+        ];
+        return $result;
     }
     
-    
+    /*
+     * 返回终端名称组合规则
+     */
+    public function get_terminal_name($meetname,$type='sip') {
+        if($type=='sip'){
+            return $meetname.'|sip';
+        }elseif($type=='rtmp'){
+             return $meetname.'|live';
+        }else{
+            return $meetname."|".$type;
+        }
+    }
     /*
      * 邀请终端到会议中
      * 

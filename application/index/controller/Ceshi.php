@@ -16,12 +16,13 @@ class Ceshi extends Controller {
      //mcu接口测试
     public function ceshi() {
         
-//        $this->add_terminals();
+//       $this->add_terminals();
 //        $this->add_call();
 //        $this->toggle_ext();
          //$this->stop_task();
 //         $this->delete_terminal();
-        //Queue::push('app\common\jobs\WebexLiveR@sendlive', ['aa'=>11], $queue ='webexlive');
+       
+        
     }
     
     /*

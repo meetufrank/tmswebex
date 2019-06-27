@@ -25,7 +25,8 @@
             <div class="middle">
                 <div class="middle-header">
                     <span>会议名称：{$li.meetingname}</span>
-                    <button type="button" id="btn{$li.meetingkey}" class="btndelete"  > <span style="color: #409eff;" data-id="{$li.meetingkey}">X</span> </button>
+                    <!--<button type="button"> <span >X</span> </button>-->
+                    <a id="btn{$li.meetingkey}" class="btndelete"  style="color: #409eff;" data-id="{$li.meetingkey}">X</a>
                 </div>
                 <div class="middle-center">
                     <span>会议{if condition='$li.meetstatus eq "Pending"'}未开始{elseif condition='$li.meetstatus eq "Ongoing"'}进行中{/if}</span>
@@ -36,6 +37,7 @@
                 </div>
             </div>
         </div>
+        <div style="display:block;position:relative;height:80px;width:100%"></div> <!-- 用来撑内容跟页脚的距离 让每一块的内容都显示完整 -->
         <!--点击右上角 ❌ 团出确定关闭弹出层-->
         <!--背景色-->
         <div class="bg bg{$li.meetingkey}" style="display: none;">
@@ -78,7 +80,7 @@
             });
         });
         // 点击 ❌ 弹出确定弹出层
-        $('.btndelete span').click(function(event){
+        $('.btndelete').click(function(event){   /* 更改点击事件触发对象 */
            var key=$(this).attr("data-id");
            $('.bg'+key).show();
            event.stopPropagation();

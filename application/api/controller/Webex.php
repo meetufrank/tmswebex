@@ -296,7 +296,8 @@ class Webex extends Base {
             $insertdata=[
                 'channel_id'=>$channel_id,
                 'meeting_id'=>$data['ConferenceId'],
-                'log_id'=>$log_id
+                'log_id'=>$log_id,
+                'call_work'=>1 //pexip
             ];
             Db::connect('zbsql')->name('c_meeting')->insert($insertdata);
             $returndata=[
@@ -676,12 +677,12 @@ class Webex extends Base {
 //        cache(input('post.meetingKey'),input('post.meetingKey'));
         //查找会议列表id
         $p_where=[
-            'meeting_id'=>input('post.meetingKey')
+            'meeting_id'=>input('post.meetingKey'),
         ];
         $wedata=Db::connect('zbsql')->name('c_meeting')
                 ->where($p_where)
                 ->find();
-        if(!empty($wedata)){
+        if(!empty($wedata)&&$wedata['call_work']==1){
                $d_where=[
                 'id'=>$wedata['log_id']
                ];
@@ -701,7 +702,7 @@ class Webex extends Base {
             $this->buildSuccess([], '删除成功');
           
         }else{
-            echo $this->buildFailed(-1,'未找到该会议',[],false);
+            echo $this->buildFailed(-1,'未找到该会议或使用了错误的客户端',[],false);
             exit;
         }
         

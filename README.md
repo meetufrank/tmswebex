@@ -3,12 +3,37 @@
 
 # ApiAdmin
 [![ApiAdmin](https://img.shields.io/hexpm/l/plug.svg)](http://www.apiadmin.org/)
-[![ApiAdmin](https://img.shields.io/badge/release-v3.0.8-blue.svg)](http://www.apiadmin.org/)
+[![ApiAdmin](https://img.shields.io/badge/release-v4.0.0-blue.svg)](http://www.apiadmin.org/)
 [![ApiAdmin](https://img.shields.io/badge/build-passing-brightgreen.svg)](http://www.apiadmin.org/)
-[![ApiAdmin](https://img.shields.io/badge/ApiAdmin-v3.0.8-brightgreen.svg)](http://www.apiadmin.org/)
+[![ApiAdmin](https://img.shields.io/badge/ApiAdmin-v4.0.0-brightgreen.svg)](http://www.apiadmin.org/)
 
 ## 前端页面
-ApiAdmin3.0是一个前后端完全分离的项目，前端采用Vue构建，如需要可视化配置的请移步：[ApiAdmin-WEB](https://gitee.com/apiadmin/ApiAdmin-WEB)
+ApiAdmin4.0是一个前后端完全分离的项目，前端采用Vue构建，如需要可视化配置的请移步：[ApiAdmin-WEB](https://gitee.com/apiadmin/ApiAdmin-WEB)
+
+## 快速安装
+
+> 第一步：安装代码
+
+```
+composer create-project apiadmin/apiadmin4
+```
+```
+你也可以：先获取基础代码 git clone https://gitee.com/apiadmin/ApiAdmin.git   再使用composer安装 composer install
+```
+
+> 第二步：检测环境以及配置数据库
+
+```
+php think apiadmin:install --db mysql://root:123456@127.0.0.1:3306/apiadmin#utf8
+```
+
+> 第三步：数据库迁移
+
+```
+php think migrate:run
+```
+
+**注：安装完成后，后台管理员的账号密码请查看：application/install/lock.ini**
 
 ## 灵 感
 
@@ -31,7 +56,7 @@ ApiAdmin3.0是一个前后端完全分离的项目，前端采用Vue构建，如
 
 **项目构成**
 
-- ThinkPHP v5.0.19
+- ThinkPHP v5.1.*
 - Vue 2.0
 - semanticUI
 - ...

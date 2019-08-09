@@ -33,14 +33,6 @@ return [
             'wiki/index/logout',
             ['method' => 'get']
         ],
-        'download/webex'=>'wiki/download/webexdownload',    
         '__miss__'      => ['wiki/index/index'],
     ],
-    '[manage]' => [
-        'index' => [
-            'manage/index/index',
-            ['method' => 'get']
-        ],
-        '__miss__'      => ['manage/index/index'],
-    ]
 ];

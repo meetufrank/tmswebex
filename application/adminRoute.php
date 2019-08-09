@@ -1,240 +1,279 @@
 <?php
+
+use think\Route;
+
 $afterBehavior = [
     '\app\admin\behavior\ApiAuth',
     '\app\admin\behavior\ApiPermission',
     '\app\admin\behavior\AdminLog'
 ];
 
-return [
-    '[admin]' => [
-        'Login/index'                 => [
+Route::group('admin', function () use ($afterBehavior) {
+    //一些带有特殊参数的路由写到这里
+    Route::rule([
+        'Login/index'  => [
             'admin/Login/index',
             ['method' => 'post']
         ],
-        'Index/upload'                => [
+        'Index/upload' => [
             'admin/Index/upload',
-            ['method' => 'post', 'after_behavior' => ['\app\admin\behavior\ApiAuth', '\app\admin\behavior\AdminLog']]
+            [
+                'method'         => 'post',
+                'after_behavior' => [
+                    '\app\admin\behavior\ApiAuth',
+                    '\app\admin\behavior\AdminLog'
+                ]
+            ]
         ],
-        'Login/logout'                => [
+        'Login/logout' => [
             'admin/Login/logout',
-            ['method' => 'get', 'after_behavior' => ['\app\admin\behavior\ApiAuth', '\app\admin\behavior\AdminLog']]
-        ],
-        'Menu/index'                  => [
+            [
+                'method'         => 'get',
+                'after_behavior' => [
+                    '\app\admin\behavior\ApiAuth',
+                    '\app\admin\behavior\AdminLog'
+                ]
+            ]
+        ]
+    ]);
+    //大部分控制器的路由都以分组的形式写到这里
+    Route::group('Menu', [
+        'index'        => [
             'admin/Menu/index',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'Menu/changeStatus'           => [
+        'changeStatus' => [
             'admin/Menu/changeStatus',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'Menu/add'                    => [
+        'add'          => [
             'admin/Menu/add',
-            ['method' => 'post', 'after_behavior' => $afterBehavior]
+            ['method' => 'post']
         ],
-        'Menu/edit'                   => [
+        'edit'         => [
             'admin/Menu/edit',
-            ['method' => 'post', 'after_behavior' => $afterBehavior]
+            ['method' => 'post']
         ],
-        'Menu/del'                    => [
+        'del'          => [
             'admin/Menu/del',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
-        ],
-        'User/index'                  => [
+            ['method' => 'get']
+        ]
+    ], ['after_behavior' => $afterBehavior]);
+    Route::group('User', [
+        'index'        => [
             'admin/User/index',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'User/getUsers'               => [
+        'getUsers'     => [
             'admin/User/getUsers',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'User/changeStatus'           => [
+        'changeStatus' => [
             'admin/User/changeStatus',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'User/add'                    => [
+        'add'          => [
             'admin/User/add',
-            ['method' => 'post', 'after_behavior' => $afterBehavior]
+            ['method' => 'post']
         ],
-        'User/own'                    => [
+        'own'          => [
             'admin/User/own',
-            ['method' => 'post', 'after_behavior' => $afterBehavior]
+            ['method' => 'post']
         ],
-        'User/edit'                   => [
+        'edit'         => [
             'admin/User/edit',
-            ['method' => 'post', 'after_behavior' => $afterBehavior]
+            ['method' => 'post']
         ],
-        'User/del'                    => [
+        'del'          => [
             'admin/User/del',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'Auth/index'                  => [
+    ], ['after_behavior' => $afterBehavior]);
+    Route::group('Auth', [
+        'index'        => [
             'admin/Auth/index',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'Auth/changeStatus'           => [
+        'changeStatus' => [
             'admin/Auth/changeStatus',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'Auth/delMember'              => [
-            'admin/Auth/delMember',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
-        ],
-        'Auth/add'                    => [
+        'add'          => [
             'admin/Auth/add',
-            ['method' => 'post', 'after_behavior' => $afterBehavior]
+            ['method' => 'post']
         ],
-        'Auth/edit'                   => [
+        'delMember'    => [
+            'admin/Auth/delMember',
+            ['method' => 'get']
+        ],
+        'edit'         => [
             'admin/Auth/edit',
-            ['method' => 'post', 'after_behavior' => $afterBehavior]
+            ['method' => 'post']
         ],
-        'Auth/del'                    => [
+        'del'          => [
             'admin/Auth/del',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'Auth/getGroups'              => [
+        'getGroups'    => [
             'admin/Auth/getGroups',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'Auth/getRuleList'            => [
+        'getRuleList'  => [
             'admin/Auth/getRuleList',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
-        ],
-        'App/index'                   => [
+            ['method' => 'get']
+        ]
+    ], ['after_behavior' => $afterBehavior]);
+    Route::group('App', [
+        'index'            => [
             'admin/App/index',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'App/changeStatus'            => [
+        'refreshAppSecret' => [
+            'admin/App/refreshAppSecret',
+            ['method' => 'get']
+        ],
+        'changeStatus'     => [
             'admin/App/changeStatus',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'App/getAppInfo'              => [
-            'admin/App/getAppInfo',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
-        ],
-        'App/add'                     => [
+        'add'              => [
             'admin/App/add',
-            ['method' => 'post', 'after_behavior' => $afterBehavior]
+            ['method' => 'post']
         ],
-        'App/edit'                    => [
+        'getAppInfo'       => [
+            'admin/App/getAppInfo',
+            ['method' => 'get']
+        ],
+        'edit'             => [
             'admin/App/edit',
-            ['method' => 'post', 'after_behavior' => $afterBehavior]
+            ['method' => 'post']
         ],
-        'App/del'                     => [
+        'del'              => [
             'admin/App/del',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
-        ],
-        'InterfaceList/index'         => [
+            ['method' => 'get']
+        ]
+    ], ['after_behavior' => $afterBehavior]);
+    Route::group('InterfaceList', [
+        'index'        => [
             'admin/InterfaceList/index',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'InterfaceList/refresh'       => [
-            'admin/InterfaceList/refresh',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
-        ],
-        'InterfaceList/changeStatus'  => [
+        'changeStatus' => [
             'admin/InterfaceList/changeStatus',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'InterfaceList/getHash'       => [
-            'admin/InterfaceList/getHash',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
-        ],
-        'InterfaceList/add'           => [
+        'add'          => [
             'admin/InterfaceList/add',
-            ['method' => 'post', 'after_behavior' => $afterBehavior]
+            ['method' => 'post']
         ],
-        'InterfaceList/edit'          => [
+        'refresh'      => [
+            'admin/InterfaceList/refresh',
+            ['method' => 'get']
+        ],
+        'edit'         => [
             'admin/InterfaceList/edit',
-            ['method' => 'post', 'after_behavior' => $afterBehavior]
+            ['method' => 'post']
         ],
-        'InterfaceList/del'           => [
+        'del'          => [
             'admin/InterfaceList/del',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'Fields/index'                => [
+        'getHash'      => [
+            'admin/InterfaceList/getHash',
+            ['method' => 'get']
+        ]
+    ], ['after_behavior' => $afterBehavior]);
+    Route::group('Fields', [
+        'index'    => [
             'admin/Fields/index',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'Fields/request'              => [
+        'request'  => [
             'admin/Fields/request',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'Fields/response'             => [
-            'admin/Fields/response',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
-        ],
-        'Fields/add'                  => [
+        'add'      => [
             'admin/Fields/add',
-            ['method' => 'post', 'after_behavior' => $afterBehavior]
+            ['method' => 'post']
         ],
-        'Fields/upload'               => [
-            'admin/Fields/upload',
-            ['method' => 'post', 'after_behavior' => $afterBehavior]
+        'response' => [
+            'admin/Fields/response',
+            ['method' => 'get']
         ],
-        'Fields/edit'                 => [
+        'edit'     => [
             'admin/Fields/edit',
-            ['method' => 'post', 'after_behavior' => $afterBehavior]
+            ['method' => 'post']
         ],
-        'Fields/del'                  => [
+        'del'      => [
             'admin/Fields/del',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'InterfaceGroup/index'        => [
+        'upload'   => [
+            'admin/Fields/upload',
+            ['method' => 'post']
+        ]
+    ], ['after_behavior' => $afterBehavior]);
+    Route::group('InterfaceGroup', [
+        'index'        => [
             'admin/InterfaceGroup/index',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'InterfaceGroup/add'          => [
-            'admin/InterfaceGroup/add',
-            ['method' => 'post', 'after_behavior' => $afterBehavior]
-        ],
-        'InterfaceGroup/edit'         => [
-            'admin/InterfaceGroup/edit',
-            ['method' => 'post', 'after_behavior' => $afterBehavior]
-        ],
-        'InterfaceGroup/del'          => [
-            'admin/InterfaceGroup/del',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
-        ],
-        'InterfaceGroup/getAll'       => [
+        'getAll'       => [
             'admin/InterfaceGroup/getAll',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'InterfaceGroup/changeStatus' => [
+        'add'          => [
+            'admin/InterfaceGroup/add',
+            ['method' => 'post']
+        ],
+        'changeStatus' => [
             'admin/InterfaceGroup/changeStatus',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'AppGroup/index'              => [
+        'edit'         => [
+            'admin/InterfaceGroup/edit',
+            ['method' => 'post']
+        ],
+        'del'          => [
+            'admin/InterfaceGroup/del',
+            ['method' => 'get']
+        ]
+    ], ['after_behavior' => $afterBehavior]);
+    Route::group('AppGroup', [
+        'index'        => [
             'admin/AppGroup/index',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'AppGroup/add'                => [
-            'admin/AppGroup/add',
-            ['method' => 'post', 'after_behavior' => $afterBehavior]
-        ],
-        'AppGroup/edit'               => [
-            'admin/AppGroup/edit',
-            ['method' => 'post', 'after_behavior' => $afterBehavior]
-        ],
-        'AppGroup/del'                => [
-            'admin/AppGroup/del',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
-        ],
-        'AppGroup/getAll'             => [
+        'getAll'       => [
             'admin/AppGroup/getAll',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'AppGroup/changeStatus'       => [
+        'add'          => [
+            'admin/AppGroup/add',
+            ['method' => 'post']
+        ],
+        'changeStatus' => [
             'admin/AppGroup/changeStatus',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'Log/index'                   => [
+        'edit'         => [
+            'admin/AppGroup/edit',
+            ['method' => 'post']
+        ],
+        'del'          => [
+            'admin/AppGroup/del',
+            ['method' => 'get']
+        ]
+    ], ['after_behavior' => $afterBehavior]);
+    Route::group('Log', [
+        'index' => [
             'admin/Log/index',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
+            ['method' => 'get']
         ],
-        'Log/del'                     => [
+        'del'   => [
             'admin/Log/del',
-            ['method' => 'get', 'after_behavior' => $afterBehavior]
-        ],
-        '__miss__'                    => ['admin/Miss/index'],
-    ],
-];
+            ['method' => 'get']
+        ]
+    ], ['after_behavior' => $afterBehavior]);
+    Route::miss('admin/Miss/index');
+});

@@ -198,9 +198,7 @@ class Fields extends Base {
     }
 
     private function handle($data, &$dataArr, $prefix = 'data', $index = 'data') {
-        
         if (!$this->isAssoc($data)) {
-            
             $addArr = array(
                 'fieldName' => $index,
                 'showName'  => $prefix,
@@ -211,8 +209,7 @@ class Fields extends Base {
             );
             $dataArr[] = $addArr;
             $prefix .= '[]';
-            print_r($data);exit;
-            if (is_array($data[0])) {
+            if (isset($data[0]) && is_array($data[0])) {
                 $this->handle($data[0], $dataArr, $prefix);
             }
         } else {
@@ -243,7 +240,7 @@ class Fields extends Base {
                         $addArr['dataType'] = DataType::TYPE_FLOAT;
                     }
                     $dataArr[] = $addArr;
-                } elseif (is_array($datum)&&!empty($datum)) {
+                } elseif (is_array($datum)) {
                     $this->handle($datum, $dataArr, $myPre, $index);
                 } else {
                     $addArr['dataType'] = DataType::TYPE_STRING;

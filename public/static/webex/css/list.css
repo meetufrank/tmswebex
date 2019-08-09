@@ -57,7 +57,8 @@
 }
 .middle .middle-header>span{
     display: block;
-    width: 100%;
+    width: 73%;
+    margin: 0 auto;
     overflow: hidden;
     text-align: center;
     text-overflow: ellipsis;
@@ -115,6 +116,7 @@
     right: 0;
     text-align: center;
     background: rgba(211,211,211,.5);
+    z-index: 9;
 }
 .box{
     display: inline-block;

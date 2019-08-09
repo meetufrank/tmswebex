@@ -11,7 +11,73 @@
     <link rel="stylesheet" href="__WEBEX__/css/ments.css">
     <!--插件css样式-->
     <link rel="stylesheet" href="__WEBEX__/css/rolldate.css">
+    <!--<link rel="stylesheet" href="__WEBEX__/css/mui.min.css"/>-->
+    <style>
+        .kgBlock{
+            position: relative;
+            right: -250px;
+        }
+        .kgBlock span{
+                position: relative;
+                top: -9px;
+                    right: 5px;
+                font-size: 1.5rem;
+                color: #757575;
+        }
+        .mui-switch:before {
+            content: '关';
+            color: #999;
+            font-size: 1.3rem;
+            position: absolute;
+            right: 10px;
+            top: 5px;
+         }
 
+        .mui-switch.mui-active:before {
+                content: '开';
+                color: #fff;
+                font-size: 1.3rem;
+                position: absolute;
+                left: 10px; 
+                top: 5px;
+        }
+        .mui-active{
+            background: #0882fd !important;
+        }
+        .mui-switch{
+                position: relative;
+                display: inline-block;
+                width: 59px;
+                height: 30px;
+                -webkit-transition-timing-function: ease-in-out;
+                transition-timing-function: ease-in-out;
+                -webkit-transition-duration: .2s;
+                transition-duration: .2s;
+                -webkit-transition-property: background-color,border;
+                transition-property: background-color,border;
+                border: 2px solid #ddd;
+                border-radius: 20px;
+                background-color: #fff;
+                background-clip: padding-box;
+        }
+        .mui-switch .mui-switch-handle{
+                position: absolute;
+                z-index: 1;
+                top: 0px;
+                left: -1px;
+                width: 25px;
+                height: 25px;
+                -webkit-transition: .2s ease-in-out;
+                transition: .2s ease-in-out;
+                -webkit-transition-property: -webkit-transform,width,left;
+                transition-property: transform,width,left;
+                border-radius: 16px;
+                background-color: #fff;
+                background-clip: padding-box;
+                -webkit-box-shadow: 0 2px 5px rgba(0,0,0,.4);
+                box-shadow: 0 2px 5px rgba(0,0,0,.4);
+        }
+    </style>
 </head>
 <body>
     <div class="ments">
@@ -36,6 +102,15 @@
                 <input type="text" id="demo3" placeholder="持续时间" readonly name="long" value="">
                 <i class="glyphicon glyphicon-time"></i>
             </div>
+            <!--开关按钮-->
+<!--            <div class="kgBlock">
+                <span>webex:</span>
+                <div class="mui-switch mui-active" id="webex_button">
+                    <div class="mui-switch-handle"></div>
+                </div>
+                <input type="hidden" value="on"  name="isWebex"/>
+            </div>-->
+            
             <!--提交按钮-->
             <input type="button" class="tijiao" value="提交">
         </form>
@@ -51,8 +126,22 @@
 
     <script src="__WEBEX__/js/jquery.min.js"></script>
     <script src="__WEBEX__/js/rolldate.js"></script>
+    <script src="__WEBEX__/js/mui.min.js"></script>
     <script src="__WEBEX__/layer.mobile-v2.0/layer.mobile-v2.0/layer_mobile/layer.js"></script>
     <script>
+        
+//        if($(".mui-switch").hasClass("mui-active")){
+//            $(".mui-switch-handle").css("transform","translate(31px, 0px)");
+//        }
+//        
+//        document.getElementById("webex_button").addEventListener("toggle",function(event){
+//          if(event.detail.isActive){
+//            $("input[name='isWebex']").val('on');
+//          }else{
+//            $("input[name='isWebex']").val('off');
+//          }
+//        })
+   
         $('.tijiao').click(function(){
             
             
@@ -108,6 +197,8 @@
             var meetduration=parseInt(parseInt(arr[0])*60+parseInt(arr[1]));  //持续时间
             
             var meetingName=myform.mingcheng.value;
+            
+           
             $(".al").css('display','block');
             $(".tijiao").attr('disabled',true);  
             $.ajax({
@@ -128,7 +219,7 @@
                             }
                             if(data.code == -7){
                                 
-                                window.location.href="{:url('/meeting_login')}";
+                                window.location.href="{:url('/webex_login')}";
                             }
                             if(data.code == 1){
                                 if(data.data.meetingkey){

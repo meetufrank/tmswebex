@@ -27,30 +27,85 @@ class McuCall
      */
     public function sendlive(Job $job, $data) 
     {
+       
         //查询会议是否提前取消了
         $m_where=[
-            'pl.delete_time'=>['gt',$data['startime']],
-            'pl.id'=>$data['log_id']
+            'delete_time'=>['gt',$data['startime']],
+            'id'=>$data['log_id']
         ];
+        
         //获取会议室信息
-        $m_list=Db::connect('zbsql')->name('meeting_log')->alias('pl')
-                ->join(config('zbsql.prefix').'mcu_list p','pl.mcu_id = p.id','left')
+        $m_list=Db::connect('zbsql')->name('meeting_log')
                 ->where($m_where)
-                ->field('p.*')
                 ->find();
-         
+        
        
         if(empty($m_list)){
+            
             //file_put_contents(RUNTIME_PATH.'redislog.txt', '开始执行sip',FILE_APPEND);
             $job->delete();
-        }else{
-            $this->name=$m_list['name'];
-            $this->pwd=$m_list['pwd'];
-            $this->meeting_name=$m_list['meeting_name'];
-            $this->ip=$m_list['ip'];
-            $this->api_port=$m_list['api_port'];
-            $this->api_path=$m_list['api_path'];
-            $this->protocol=$m_list['protocol'];
+        }else{ 
+            //查询分配的会议室是否因为并发原因重复了
+             //查询当前会议室列表
+                    $meet_list=Db::connect('zbsql')->name('mcu_list') 
+                        ->select();
+
+                    $where=[
+
+                    'pl.start_time'=>['elt',$data['stoptime']],
+                    'pl.delete_time'=>[
+                        ['egt',$data['startime']],
+                        ['egt',time()],
+                        ],
+                    'pl.id'=>['neq',$data['log_id']]
+                    ];
+                    $wedata=Db::connect('zbsql')->name('meeting_log')->alias('pl')
+                        ->join(config('zbsql.prefix').'mcu_list p','pl.mcu_id = p.id','left')
+                        ->where($where)
+                        ->field('p.*,pl.mcu_id as ml_mcu_id')
+                        ->select();
+                    $n_m_list=[];
+                    if(empty($wedata)&&!empty($meet_list)){
+
+                         $m_list=$meet_list[0];
+                     }else{
+
+
+
+                        foreach ($wedata as $key => $value) {
+                            foreach ($meet_list as $kk => $vv) {
+                               if($value['ml_mcu_id']==$vv['id']){
+                                   unset($meet_list[$kk]);  
+                               } 
+                            }
+                        }
+                        if(!empty($meet_list)){
+                            foreach ($meet_list as $key => $value) {
+                                $n_m_list[]=$value;
+                            }
+                           $m_list=$n_m_list[0];
+                        }else{
+                            //无空闲会议室
+                            $job->delete();
+                            return true;
+                        }
+                    }
+
+                    if($m_list['id']!=$data['mcu_id']){
+                        $data['mcu_id']=$m_list['id'];
+                        $updatedata=[
+                            'mcu_id'=>$m_list['id']
+                        ];
+                         $log_id=Db::connect('zbsql')->name('meeting_log')->where(['id'=>$data['log_id']])->update($updatedata);
+                    }
+                    $this->name=$m_list['name'];
+                    $this->pwd=$m_list['pwd'];
+                    $this->meeting_name=$m_list['meeting_name'];
+                    $this->ip=$m_list['ip'];
+                    $this->api_port=$m_list['api_port'];
+                    $this->api_path=$m_list['api_path'];
+                    $this->protocol=$m_list['protocol'];  
+           
             if ($job->attempts() > 3) {              
                 // 第1种处理方式：重新发布任务,该任务延迟10秒后再执行
                 //$job->release(10); 
@@ -60,8 +115,10 @@ class McuCall
                 $job->delete();  
                 }else{
                     //file_put_contents(RUNTIME_PATH.'redislog.txt', json_encode($data),FILE_APPEND);
+                      
+            
                         $result=$this->send($data);
-
+ 
                         if($result==1){
                             $job->delete();
                         }elseif ($result==0) {
@@ -109,9 +166,10 @@ class McuCall
         
         
         try{
+//            file_put_contents(RUNTIME_PATH.'redislog.txt', date('Y-m-d H:i:s').'    '.$data['meetingkey']."会议开始执行\n",FILE_APPEND);
             //执行终端任务
             $this->execute($data);
-            file_put_contents(RUNTIME_PATH.'redislog.txt', date('Y-m-d H:i:s').'    '.$data['meetingkey']."会议进程执行成功\n",FILE_APPEND);
+           file_put_contents(RUNTIME_PATH.'redislog.txt', date('Y-m-d H:i:s').'    '.$data['meetingkey']."会议进程执行成功\n",FILE_APPEND);
             return true;
         } catch (\Exception $e){
             file_put_contents(RUNTIME_PATH.'redislog.txt', date('Y-m-d H:i:s').'    '.$data['meetingkey'].'会议出现了执行错误,错误信息为：'.$e->getMessage()."\n",FILE_APPEND);
@@ -123,12 +181,20 @@ class McuCall
     }
     
     private function execute($data){
+       ;
         //初始化mcu接口类
         $mculogic=new McuLogic($this->name, $this->pwd, $this->ip, $this->api_port, $this->api_path);
         if($data['is_live']!=1){  //是否直播
           $data['rtmpurl']='';
         }
-        $terminals_arr=$mculogic->add_terminals($this->meeting_name, $data['sipurl'], $data['rtmpurl']);  //添加终端
+        if($data['is_pull']!=1){  //是否添加拉流
+           $data['pull_url']=''; 
+        }
+        //替换ketiancloud为移动地址
+        $cloudstr='ketiancloud.com';
+        $data['sipurl']=str_replace($cloudstr,'111.13.160.94', $data['sipurl']);
+        $mculogic->start_task($this->meeting_name); //开始会议
+        $terminals_arr=$mculogic->add_terminals($this->meeting_name, $data['sipurl'], $data['rtmpurl'],$data['pull_url']);  //添加终端
         foreach (@$terminals_arr as $key => $value) {
             if(!empty($value)){
                 $mculogic->add_call($this->meeting_name, $value);  //邀请终端

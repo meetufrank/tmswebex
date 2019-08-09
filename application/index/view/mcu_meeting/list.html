@@ -37,7 +37,7 @@
                 </div>
             </div>
         </div>
-        <div style="display:block;position:relative;height:80px;width:100%"></div> <!-- 用来撑内容跟页脚的距离 让每一块的内容都显示完整 -->
+        
         <!--点击右上角 ❌ 团出确定关闭弹出层-->
         <!--背景色-->
         <div class="bg bg{$li.meetingkey}" style="display: none;">
@@ -57,6 +57,7 @@
             </div>
         </div>
         {/foreach}
+        <div style="display:block;position:relative;height:80px;width:100%"></div> <!-- 用来撑内容跟页脚的距离 让每一块的内容都显示完整 -->
         <!--页脚-->
         <div class="footer">
             <div class="push">
@@ -120,7 +121,7 @@
                             }
                             if(data.code == -7){
                                 
-                                window.location.href="{:url('/meeting_login')}";
+                                window.location.href="{:url('/webex_login')}";
                             }
                         }
                     });

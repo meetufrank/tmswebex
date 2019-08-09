@@ -47,7 +47,7 @@ class McuMeeting extends Base {
     }
     public function postLogin(){
           $webexid= trim(input('post.webExId'));
-            $password=input('post.password');
+            $password=input('post.password')?input('post.password'):'';
             $sitename=trim(input('post.siteName'));
             $remember=input('post.remember');
             
@@ -121,7 +121,7 @@ class McuMeeting extends Base {
                  
                return view('list');
             }elseif($r_arr['code']==-7) {
-                $this->redirect('/webex_login');
+                $this->redirect('/meeting_login');
             }    
            
        }
@@ -136,6 +136,11 @@ class McuMeeting extends Base {
          
         if($meetingKey){
             
+            //查询出频道Id
+            $pddata=Db::connect('zbsql')->name('c_meeting')->where(['meeting_id'=>$meetingKey])->field("channel_id")->find();
+            $webexdata=Db::connect('zbsql')->name("ch_we_cms")->where(['channels_id'=>$pddata['channel_id']])->field("webex_id")->find();
+            
+            $this->assign("webex_id", $webexdata['webex_id']);
             $postdata=[
               'meetingKey'  =>$meetingKey,
           
@@ -153,7 +158,7 @@ class McuMeeting extends Base {
 
 
             $result= httpRequest($this->apidomain.'/api/5d13157955b1d', 'post', $postdata,$header,false);
-       
+ 
             if($result){
                 $r_arr=json_decode($result,true);  //列表数组
 
@@ -163,7 +168,7 @@ class McuMeeting extends Base {
 
                    return view('details');
                 }elseif($r_arr['code']==-7) {
-                    $this->redirect('/webex_login');
+                    $this->redirect('/meeting_login');
                 }    
 
            }
@@ -218,11 +223,13 @@ class McuMeeting extends Base {
             $meetingStart=input('post.meetingStart');
             $meetduration=input('post.meetduration');
             $meetingPassword=input('post.meetingPassword')?input('post.meetingPassword'):'';
+            $isWebex=input('post.isWebex')?input('post.isWebex'):'on';
             $postdata=[
                 'meetingName'=>$meetingName,
                 'meetingStart'=>$meetingStart,
                 'meetduration'=>$meetduration,
-                'meetingPassword'=>$meetingPassword
+                'meetingPassword'=>$meetingPassword,
+                'isWebex'=>$isWebex
             ];
             if(cookie('sessionid')){
                 

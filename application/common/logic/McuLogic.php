@@ -114,25 +114,31 @@ class McuLogic extends Logic {
     }
     
     /*
-     * 添加sip终端和rtmp终端到mcu
+     * 添加sip终端和rtmp终端、拉流终端到mcu
      */
-    public function add_terminals($meetname,$sipurl='',$rtmpurl=''){  //会议室名称，sip地址，rtmp地址
-    
+    public function add_terminals($meetname,$sipurl='',$rtmpurl='',$rtmp_l=''){  //会议室名称，sip地址，rtmp地址,rtmp拉流地址
+               
+        $sipobj=[];
+        $rtmpobj=[];
+        $rtmp_lobj=[];
+        $rtmp_l_terminal_name='';
+        $sip_terminal_name='';
+        $rtmp_terminal_name='';
         if(!empty($sipurl)){
            //拆分sip地址
             $siparr=@explode('@',$sipurl,2);
             $sip_num=$siparr[0];
-            $sip_domain=$siparr[1];
+            $sip_domain=$siparr[1].';transport=tcp';
 
             //创建sip终端名称
             $sip_terminal_name= $this->get_terminal_name($meetname,'sip'); 
-            
+           
             //构造呼叫sip参数集
             $sipobj=new Value(
                                         array(
                                             '_name'=> new Value($sip_terminal_name,'string'),
                                             '_sortname' => new Value('','string'),
-                                            '_bandwidth' => new Value(2000000,'int'),
+                                            '_bandwidth' => new Value(500000,'int'),
                                             '_interface_cat' => new Value('','string'),
                                             '_type' => new Value(3,'int'), //sip类型
                                             '_sip_option' => new Value(
@@ -156,7 +162,7 @@ class McuLogic extends Logic {
                                                                    '_codec'=>new Value(9,'int'),
                                                                    '_bitrate'=>new Value(0,'int'),
                                                                    '_fps'=>new Value(30,'int'),
-                                                                   '_sizes'=>new Value('1920x1080','string')
+                                                                   '_sizes'=>new Value('1280x720','string')
                                                                )
                                                                ,'struct'), 
                                                        new Value(
@@ -165,7 +171,7 @@ class McuLogic extends Logic {
                                                                    '_codec'=>new Value(9,'int'),
                                                                    '_bitrate'=>new Value(0,'int'),
                                                                    '_fps'=>new Value(30,'int'),
-                                                                   '_sizes'=>new Value('1920x1080','string')
+                                                                   '_sizes'=>new Value('1280x720','string')
                                                                )
                                                                ,'struct')
                                                     )
@@ -180,7 +186,7 @@ class McuLogic extends Logic {
                                         array(
                                             '_name'=>new Value($rtmp_terminal_name,'string'),
                                             '_sortname'=>new Value('','string'),
-                                            '_bandwidth'=>new Value(2000000,'int'),
+                                            '_bandwidth'=>new Value(500000,'int'),
                                             '_interface_cat'=>new Value('','string'),
                                             '_type'=>new Value(5,'int'),
                                             '_rtmp_option'=>new Value(
@@ -203,7 +209,7 @@ class McuLogic extends Logic {
                                                                    '_codec'=>new Value(9,'int'),
                                                                    '_bitrate'=>new Value(0,'int'),
                                                                    '_fps'=>new Value(30,'int'),
-                                                                   '_sizes'=>new Value('1920x1080','string')
+                                                                   '_sizes'=>new Value('1280x720','string')
                                                                 )
                                                                 ,'struct'),
                                                         new Value(
@@ -212,7 +218,7 @@ class McuLogic extends Logic {
                                                                    '_codec'=>new Value(9,'int'),
                                                                    '_bitrate'=>new Value(0,'int'),
                                                                    '_fps'=>new Value(30,'int'),
-                                                                   '_sizes'=>new Value('1920x1080','string')
+                                                                   '_sizes'=>new Value('1280x720','string')
                                                                 )
                                                                 ,'struct')
                                                     )
@@ -220,17 +226,61 @@ class McuLogic extends Logic {
                                         )
                                         ,'struct');
         }
-
+        if(!empty($rtmp_l)){
+            //创建rtmp拉流终端名称
+           $rtmp_l_terminal_name=$this->get_terminal_name($meetname,'rtmp_l'); ;
+           //构造rtmp拉流参数集
+           $rtmp_lobj=new Value(
+                                        array(
+                                            '_name'=>new Value($rtmp_l_terminal_name,'string'),
+                                            '_sortname'=>new Value('','string'),
+                                            '_bandwidth'=>new Value(50000,'int'),
+                                            '_interface_cat'=>new Value('','string'),
+                                            '_type'=>new Value(5,'int'),
+                                            '_rtmp_option'=>new Value(
+                                                    array(
+                                                        '_pull_url'=>new Value($rtmp_l,'string')
+                                                    )
+                                                    ,'struct'),
+                                            '_caps'=>new Value(
+                                                    array(
+                                                        new Value(
+                                                                array(
+                                                                   '_type'=>new Value(0,'int'),
+                                                                   '_codec'=>new Value(13,'int'),
+                                                                   '_channel'=>new Value(1,'int')
+                                                                )
+                                                                ,'struct'),
+                                                        new Value(
+                                                                array(
+                                                                   '_type'=>new Value(1,'int'),
+                                                                   '_codec'=>new Value(9,'int'),
+                                                                   '_bitrate'=>new Value(0,'int'),
+                                                                   '_fps'=>new Value(30,'int'),
+                                                                   '_sizes'=>new Value('1280x720','string')
+                                                                )
+                                                                ,'struct'),
+                                                        new Value(
+                                                                array(
+                                                                   '_type'=>new Value(2,'int'),
+                                                                   '_codec'=>new Value(9,'int'),
+                                                                   '_bitrate'=>new Value(0,'int'),
+                                                                   '_fps'=>new Value(30,'int'),
+                                                                   '_sizes'=>new Value('1280x720','string')
+                                                                )
+                                                                ,'struct')
+                                                    )
+                                                    ,'array')
+                                        )
+                                        ,'struct');
+        }       
         $all_arr=[];
-       if(!empty($sipobj)&&!empty($rtmpobj)){
-           $all_arr=array($sipobj,$rtmpobj);
-       }elseif(empty($sipobj)&&!empty($rtmpobj)){
-           $all_arr=array($rtmpobj);
-       }elseif(!empty($sipobj)&&empty($rtmpobj)){
-           $all_arr=array($rtmpobj);
-       }else{
-           return true;
-       }
+        $all_arr=array($sipobj,$rtmpobj,$rtmp_lobj);
+        foreach ($all_arr as $key => $value) {
+            if(empty($value)){
+                unset($all_arr[$key]);
+            }
+        }
         
         
         
@@ -253,9 +303,17 @@ class McuLogic extends Logic {
         
         //返回终端名称
         $result=[
+            'rtmp_lname'=>$rtmp_l_terminal_name,
             'sipname'=>$sip_terminal_name,
             'rtmpname'=>$rtmp_terminal_name
+
         ];
+        foreach ($result as $key => $value) {
+            if(empty($value)){
+                unset($result[$key]);
+            }
+        }
+        
         return $result;
     }
     
@@ -267,7 +325,9 @@ class McuLogic extends Logic {
             return $meetname.'|sip';
         }elseif($type=='rtmp'){
              return $meetname.'|live';
-        }else{
+        }elseif($type=='rtmp_l'){
+             return $meetname.'|rtmp_l';  
+         }else{
             return $meetname."|".$type;
         }
     }

@@ -192,6 +192,13 @@ class McuMeeting extends Base {
      * TMS预约webex
      */
     public function tmsCreatMeet() {
+        //是否加上webex
+        if(input('post.isWebex')=='off'){
+            $is_webex=0;
+        }else{
+            $is_webex=1;
+        }
+        
         //查询会议时间是否冲突
         $timedata=[
             'startime'=>strtotime(input('post.meetingStart'))-3*60,
@@ -199,6 +206,16 @@ class McuMeeting extends Base {
         ];
         $room_id=$this->validateMeeting($timedata);  //验证并获取会议室号
         $this->responseurl="https://tms.ketiancloud.com/tms/external/booking/bookingservice.asmx";
+        if($is_webex){
+            $webex_arr=[
+                'MeetingPassword'=>input('post.meetingPassword'),
+                'JoinBeforeHostTime'=>'00:15:00',
+                'UsePstn'=>'false',
+                'OwnedExternally'=>'false'
+            ];
+        }else{
+           $webex_arr=[]; 
+        }
         $postdata=[
             'Conference'=>[
                 'ConferenceId'=>'-1',
@@ -215,12 +232,7 @@ class McuMeeting extends Base {
                 'ShowExtendOption'=>'AutomaticBestEffort',
                 'ISDNRestrict'=>'false',
                 'ExternalConference'=>[
-                    'WebEx'=>[
-                        'MeetingPassword'=>input('post.meetingPassword'),
-                        'JoinBeforeHostTime'=>'00:15:00',
-                        'UsePstn'=>'false',
-                        'OwnedExternally'=>'false'
-                    ]
+                    'WebEx'=>$webex_arr
                 ],
                 'ISDNBandwidth'=>[
                     'Bandwidth'=>'6b/384kbps'
@@ -266,24 +278,26 @@ class McuMeeting extends Base {
                 exit;
             }
             //如果会议未能成功预约出webex，则取消
-            if(!isset($data['ExternalConference']['WebEx'])||empty($data['ExternalConference']['WebEx'])){
-                $de_postdata=$data['ConferenceId'];
-                $result=$this->tmsCurl($de_postdata,'DeleteConferenceById');
-                $status=$this->validclient($result);
-                if(!$status){
-                    $result=$this->tmsCurl($postdata,'DeleteConferenceById');
-                }
-                echo $this->buildFailed(-1, '创建会议失败,请重新创建',[],false);
-                exit;
-            }
+//            if(!isset($data['ExternalConference']['WebEx'])||empty($data['ExternalConference']['WebEx'])){
+//                $de_postdata=$data['ConferenceId'];
+//                $result=$this->tmsCurl($de_postdata,'DeleteConferenceById');
+//                $status=$this->validclient($result);
+//                if(!$status){
+//                    $result=$this->tmsCurl($postdata,'DeleteConferenceById');
+//                }
+//                echo $this->buildFailed(-1, '创建会议失败,请重新创建',[],false);
+//                exit;
+//            }
             
             $sipurl='/[1-9]\d*@ketiancloud.com/';
             preg_match($sipurl,$data['ConferenceInfoText'],$siparr);
+            
             if(!empty($siparr)){
                 $cmrurl=$siparr[0];
             }else{
                 $cmrurl='';
             }
+            
             $p_log_data=[
                 'mcu_id'=>$room_id,
                 'cloud_id'=>$cmrurl,
@@ -307,13 +321,17 @@ class McuMeeting extends Base {
           
            
             $queuedata=[
+                'mcu_id'=>$room_id,
                 'startime'=>strtotime($data['StartTimeUTC'])+2*60,
+                'stoptime'=>strtotime($data['EndTimeUTC']),
                 'meetingkey'=>$data['ConferenceId'],
                 'sipurl'=>$cmrurl,
                 'rtmpurl'=> $this->rtmpconfig[$channel_id]['rtmpurl'],
                 'name'=>$data['Title'],
                 'is_live'=>1,
                 'log_id'=>$log_id ,  //主要判断字段
+                'is_pull'=>0,//是否添加拉流
+                'pull_url'=>'rtmp://live.hkstv.hk.lxdns.com/live/hks2'
             ];
             
             Queue::push('app\common\jobs\McuCall@sendlive', $queuedata, $queue ='mcucall');
@@ -359,6 +377,16 @@ class McuMeeting extends Base {
                 
                 exit;
         }
+        //临时添加周末周日维护
+       
+//        if(1564403400>$timedata['stoptime']||$timedata['startime']>1564444800){
+//                
+//        }else{
+//            echo $this->buildFailed(-1, '系统需要在2019/07/29 20:30~2019/07/30 8:00期间维护,请重新选择时间。',[],false); 
+//                
+//                exit;
+//        }
+    
         //查询当前会议室列表
         $m_list=Db::connect('zbsql')->name('mcu_list')
                 ->field('id')
@@ -508,7 +536,7 @@ class McuMeeting extends Base {
                 ->where(['cm.meeting_id'=>input('post.meetingKey')])
                 ->field('cm.*,c.play_url')
                 ->find();
-              if(isset($getdata['ExternalConference']['WebEx'])){
+              if(isset($getdata['ExternalConference']['WebEx']) && !empty($getdata['ExternalConference']['WebEx'])){
                    $returndata=[
                'meetingkey'=>$getdata['ExternalConference']['WebEx']['MeetingKey'],
                'meetingpassword'=>$getdata['ExternalConference']['WebEx']['MeetingPassword'],

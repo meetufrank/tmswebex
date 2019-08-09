@@ -41,10 +41,10 @@
                 <input id="huiyi" type="text" readonly="readonly" value="{$info.meetingkey}">
             </div>
             <!--会议密码-->
-            <div class="pwd">
+<!--            <div class="pwd">
                 <span>会议密码:</span>
-                <input id="pwd" type="text" readonly="readonly" value="{$info.meetingpassword}">
-            </div>
+                <input id="pwd" type="text" readonly="readonly" value="">
+            </div>-->
             <!--主持人密钥-->
             <div class="host">
                 <span>主持人密钥:</span>
@@ -63,11 +63,15 @@
                 <i class="glyphicon glyphicon-link join1" onclick="" data-clipboard-target="#join"></i>
             </div>
             <!--CMR地址-->
+       
+            
+            {notin name="webex_id" value="9,10"}
             <div class="cmr">
                 <span>CMR地址:</span>
                 <input id="cmr" type="text" readonly="readonly" value="{$info.cmrurl}">
                 <i class="glyphicon glyphicon-link cmr1" onclick="" data-clipboard-target="#cmr"></i>
             </div>
+             {/notin}
             <!--直播地址-->
             <div class="live">
                 <span>直播地址:</span>
@@ -92,11 +96,13 @@
      <p>会议名称：{$info.meetingname}</p>
      <p>开始时间：{$info.starttime}</p>
      <p>会议号：{$info.meetingkey}</p>
-     <p>会议密码：{$info.meetingpassword}</p>
+<!--     <p>会议密码：</p>-->
      <p>主持人密钥：{$info.hostpassword}</p>
      <p>主持人链接：{$info.hostjoinurl}</p>
      <p>加入者链接：{$info.guestjoinurl}</p>
+     {notin name="webex_id" value="9,10"}
      <p>CMR地址：{$info.cmrurl}</p>
+      {/notin}
      <p>直播地址：{$info.rtmpurl}</p>
     </form>
     <!--从表单copy到<textarea> 再把textarea去掉边框修改css样式让其不可见-->

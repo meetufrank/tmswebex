@@ -141,11 +141,11 @@ class McuStop
        try{
             //执行终端任务
             $this->execute($data);
-            file_put_contents(RUNTIME_PATH.'redislog.txt', date('Y-m-d H:i:s').'    '.$data['meetingkey']."会议删除进程执行成功\n",FILE_APPEND);
+
             
         } catch (\Exception $e){
-            file_put_contents(RUNTIME_PATH.'redislog.txt', date('Y-m-d H:i:s').'    '.$data['meetingkey'].'会议出现了删除执行错误,错误信息为：'.$e->getMessage()."\n",FILE_APPEND);
-            
+           file_put_contents(RUNTIME_PATH.'redislog.txt', date('Y-m-d H:i:s').'删除操作执行异常: '.$e->getMessage(),FILE_APPEND);
+            $job->delete();
         }
         
     }
@@ -159,7 +159,7 @@ class McuStop
         //删除终端
         $mculogic->delete_terminal($mculogic->get_terminal_name($this->meeting_name, 'sip')); 
         $mculogic->delete_terminal($mculogic->get_terminal_name($this->meeting_name, 'rtmp')); 
-        
+        $mculogic->delete_terminal($mculogic->get_terminal_name($this->meeting_name, 'rtmp_l')); 
         
     }
 }
